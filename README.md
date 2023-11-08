@@ -1,5 +1,8 @@
-# Pocketbase on Railway
+# SurgeryX Backend
 
-Open Source backend for your next SaaS and Mobile app in 1 file.
+## How to run locally
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/XfUmjI?referralCode=faraz)
+1. Download pocketbase from https://pocketbase.io/docs/ and keep pocketbase executable at `./pocketbase` (root dir of this repo)
+
+2. `./pocketbase serve`
+
