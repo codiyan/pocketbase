@@ -20,6 +20,7 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${VERSION}/
 
 COPY pb_hooks /pb_hooks
 COPY pb_migrations /pb_migrations
+COPY pb_public /pb_public
 
 FROM scratch
 
@@ -28,5 +29,6 @@ EXPOSE 8090
 COPY --from=downloader /pocketbase /usr/local/bin/pocketbase
 COPY --from=downloader /pb_hooks /pb_hooks
 COPY --from=downloader /pb_migrations /pb_migrations
+COPY --from=downloader /pb_public /pb_public
 
 CMD ["/usr/local/bin/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--publicDir=/pb_public", "--hooksDir=/pb_hooks", "--migrationsDir=/pb_migrations"]
