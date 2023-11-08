@@ -18,15 +18,34 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${VERSION}/
     && unzip pocketbase_${VERSION}_${BUILDX_ARCH}.zip \
     && chmod +x /pocketbase
 
+
+# folder structure will be like
+# /pocketbase
+
+
+#  copy from the current directory to the current stage (downloader) path on current stage /pb_hooks
+
 COPY pb_hooks /pb_hooks
 COPY pb_migrations /pb_migrations
 COPY pb_public /pb_public
+
+
+# folder structure will be like
+# /pocketbase
+# /pb_hooks
+# /pb_migrations
+# /pb_public
+
+
 
 FROM scratch
 
 EXPOSE 8090
 
-COPY --from=downloader /pocketbase /usr/local/bin/pocketbase
+
+#   copy from the previous stage (downloader) to the current stage (scratch) path on previous stage /pocketbase to current stage /usr/local/bin/pocketbase
+
+COPY --from=downloader /pocketbase /usr/local/bin/pocketbase  
 COPY --from=downloader /pb_hooks /pb_hooks
 COPY --from=downloader /pb_migrations /pb_migrations
 COPY --from=downloader /pb_public /pb_public
