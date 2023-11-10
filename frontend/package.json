@@ -9,6 +9,7 @@
     "@types/react-dom": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-router-dom": "^6.18.0",
     "typescript": "latest"
   },
   "description": "https://github.com/mui/material-ui/blob/v5.14.17/docs/data/joy/templates/order-dashboard/App.tsx",

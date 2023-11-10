@@ -1,4 +1,5 @@
-import * as React from 'react';
+// import * as React from 'react';
+import React, { Component, Suspense } from 'react'
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
@@ -10,17 +11,30 @@ import Typography from '@mui/joy/Typography';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+//import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 
 import useScript from './useScript';
 import Sidebar from './components/Sidebar';
+import SidebarNew from './components/SidebarNew';
 import OrderTable from './components/OrderTable';
 import OrderList from './components/OrderList';
 import Header from './components/Header';
-
+import menuItems from './nav';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 const useEnhancedEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress from MUI
 
-export default function JoyOrderDashboardTemplate() {
+const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const loading = (
+  <div style={{ paddingTop: '3rem', textAlign: 'center' }}>
+    <CircularProgress color="primary" /> {/* Use CircularProgress from MUI */}
+  </div>
+);
+
+export default function App() {
   const status = useScript(`https://unpkg.com/feather-icons`);
 
   useEnhancedEffect(() => {
@@ -36,87 +50,18 @@ export default function JoyOrderDashboardTemplate() {
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-        <Header />
-        <Sidebar />
-        <Box
-          component="main"
-          className="MainContent"
-          sx={{
-            px: {
-              xs: 2,
-              md: 6,
-            },
-            pt: {
-              xs: 'calc(12px + var(--Header-height))',
-              sm: 'calc(12px + var(--Header-height))',
-              md: 3,
-            },
-            pb: {
-              xs: 2,
-              sm: 2,
-              md: 3,
-            },
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            minWidth: 0,
-            height: '100dvh',
-            gap: 1,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Breadcrumbs
-              size="sm"
-              aria-label="breadcrumbs"
-              separator={<ChevronRightRoundedIcon fontSize="small" />}
-              sx={{ pl: 0 }}
-            >
-              <Link
-                underline="none"
-                color="neutral"
-                href="#some-link"
-                aria-label="Home"
-              >
-                <HomeRoundedIcon />
-              </Link>
-              <Link
-                underline="hover"
-                color="neutral"
-                href="#some-link"
-                fontSize={12}
-                fontWeight={500}
-              >
-                Dashboard
-              </Link>
-              <Typography color="primary" fontWeight={500} fontSize={12}>
-                Orders
-              </Typography>
-            </Breadcrumbs>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              my: 1,
-              gap: 1,
-              flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'start', sm: 'center' },
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography level="h2">Orders</Typography>
-            <Button
-              color="primary"
-              startDecorator={<DownloadRoundedIcon />}
-              size="sm"
-            >
-              Download PDF
-            </Button>
-          </Box>
-          <OrderTable />
-          <OrderList />
-        </Box>
+
+        <BrowserRouter>
+          <Suspense fallback={loading}></Suspense>
+          <Routes>
+            <Route path="*" element={<DefaultLayout />} />
+          </Routes>
+        </BrowserRouter>
       </Box>
     </CssVarsProvider>
   );
 }
+
+
+
+
