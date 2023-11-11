@@ -32,6 +32,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
+import { Link as RouterLink } from 'react-router-dom';
 
 function Toggler({
   defaultExpanded = false,
@@ -79,43 +80,43 @@ interface SidebarProps {
 export default function Sidebar({ menuItems }: SidebarProps) {
   return (
     <Sheet
-    className="Sidebar"
-    sx={{
-      position: {
-        xs: 'fixed',
-        md: 'sticky',
-      },
-      transform: {
-        xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))',
-        md: 'none',
-      },
-      transition: 'transform 0.4s, width 0.4s',
-      zIndex: 10000,
-      height: '100dvh',
-      width: 'var(--Sidebar-width)',
-      top: 0,
-      p: 2,
-      flexShrink: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 2,
-      borderRight: '1px solid',
-      borderColor: 'divider',
-    }}
+      className="Sidebar"
+      sx={{
+        position: {
+          xs: 'fixed',
+          md: 'sticky',
+        },
+        transform: {
+          xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))',
+          md: 'none',
+        },
+        transition: 'transform 0.4s, width 0.4s',
+        zIndex: 10000,
+        height: '100dvh',
+        width: 'var(--Sidebar-width)',
+        top: 0,
+        p: 2,
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        borderRight: '1px solid',
+        borderColor: 'divider',
+      }}
     >
       <GlobalStyles
-     styles={(theme) => ({
-      ':root': {
-      '--Sidebar-width': '220px',
-      [theme.breakpoints.up('lg')]: {
-        '--Sidebar-width': '240px',
-      },
-    },
-  })}
+        styles={(theme) => ({
+          ':root': {
+            '--Sidebar-width': '220px',
+            [theme.breakpoints.up('lg')]: {
+              '--Sidebar-width': '240px',
+            },
+          },
+        })}
 
-  
+
       />
-            <Box
+      <Box
         className="Sidebar-overlay"
         sx={{
           position: 'fixed',
@@ -135,7 +136,7 @@ export default function Sidebar({ menuItems }: SidebarProps) {
         onClick={() => closeSidebar()}
       />
 
-<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton>
@@ -156,8 +157,8 @@ export default function Sidebar({ menuItems }: SidebarProps) {
                       <Typography level="title-sm">{menuItem.label}</Typography>
                     </ListItemContent>
                     <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
+                      sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
+                    />
                   </ListItemButton>
                 )}
               >
@@ -165,7 +166,7 @@ export default function Sidebar({ menuItems }: SidebarProps) {
                 <List sx={{ gap: 0.5 }}>
                   {menuItem.submenu && menuItem.submenu.map((nestedItem, nestedIndex) => (
                     <ListItem key={nestedIndex}>
-                      <ListItemButton role="menuitem" component="a" href={nestedItem.link}>
+                      <ListItemButton role="menuitem" component={RouterLink} to={nestedItem.link} >
                         {nestedItem.icon}
                         <ListItemContent>
                           <Typography level="title-sm">{nestedItem.label}</Typography>
@@ -176,7 +177,7 @@ export default function Sidebar({ menuItems }: SidebarProps) {
                 </List>
               </Toggler>
             ) : (
-              <ListItemButton role="menuitem" component="a" href={menuItem.link}>
+              <ListItemButton role="menuitem" component={RouterLink} to={menuItem.link}>
                 {menuItem.icon}
                 <ListItemContent>
                   <Typography level="title-sm">{menuItem.label}</Typography>

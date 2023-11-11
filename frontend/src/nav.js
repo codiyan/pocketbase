@@ -10,13 +10,13 @@ import { ReactNode } from 'react';
  const menuItems = [
     { icon: <HomeRoundedIcon />, label: 'Home', link: '/home' },
     { icon: <DashboardRoundedIcon />, label: 'Dashboard', link: '/dashboard' },
-    { icon: <HomeRoundedIcon />,  label: ' Nesteds',
+    { icon: <HomeRoundedIcon />,  label: ' Orders',
     link: '/orders',
     nested: true,
     submenu: [
-      {icon: <DashboardRoundedIcon />,label: 'All Orders', link: '/orders/all' },
-      {icon: <DashboardRoundedIcon />,label: 'Pending Orders', link: '/orders/pending' },
-      {icon: <DashboardRoundedIcon />,label: 'Completed Orders', link: '/orders/completed' },
+      {icon: <DashboardRoundedIcon />,label: 'All Orders', link: '/orders' },
+      {icon: <DashboardRoundedIcon />,label: 'Pending Orders', link: '/orders' },
+      {icon: <DashboardRoundedIcon />,label: 'Completed Orders', link: '/orders' },
     ],
   },    
     // ... add more menu items as needed

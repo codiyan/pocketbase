@@ -28,11 +28,16 @@ const useEnhancedEffect =
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress from MUI
 
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+
+const Page404 = React.lazy(() => import('./views/pages/Page404'))
+const Login = React.lazy(() => import('./views/pages/Login'))
+
 const loading = (
   <div style={{ paddingTop: '3rem', textAlign: 'center' }}>
     <CircularProgress color="primary" /> {/* Use CircularProgress from MUI */}
   </div>
 );
+
 
 export default function App() {
   const status = useScript(`https://unpkg.com/feather-icons`);
@@ -52,10 +57,13 @@ export default function App() {
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
 
         <BrowserRouter>
-          <Suspense fallback={loading}></Suspense>
-          <Routes>
-            <Route path="*" element={<DefaultLayout />} />
-          </Routes>
+          <Suspense fallback={loading}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/404" element={<Page404 />} />
+              <Route path="*" element={<DefaultLayout />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </Box>
     </CssVarsProvider>
