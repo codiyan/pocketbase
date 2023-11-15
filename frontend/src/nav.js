@@ -18,7 +18,17 @@ import { ReactNode } from 'react';
       {icon: <DashboardRoundedIcon />,label: 'Pending Orders', link: '/orders' },
       {icon: <DashboardRoundedIcon />,label: 'Completed Orders', link: '/orders' },
     ],
-  },    
+    
+  },  
+  { icon: <HomeRoundedIcon />,  label: 'Patients',
+  link: '/patients',
+  nested: true,
+  submenu: [
+    {icon: <DashboardRoundedIcon />,label: 'New Patient', link: '/patients/new' },
+    {icon: <DashboardRoundedIcon />,label: 'Pending Orders', link: '/orders' },
+    {icon: <DashboardRoundedIcon />,label: 'Completed Orders', link: '/orders' },
+  ]
+}  
     // ... add more menu items as needed
   ];
 
