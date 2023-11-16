@@ -27,14 +27,13 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import { downloadCSV } from "../views/orders/Utils";
+import { downloadCSV } from "../../lib/utils";
 
 type Patient = {
   id: string;
-  patient: string;
   name: string;
   dob: number;
-  age: number;
+  status: string;
 };
 
 type OrderTableProps = {
@@ -102,7 +101,7 @@ function RowMenu() {
   );
 }
 
-export default function OrderTable({ patients }: OrderTableProps) {
+export default function CasesTable({ patients }: OrderTableProps) {
   const [order, setOrder] = useState<Order>("desc");
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
@@ -128,7 +127,7 @@ export default function OrderTable({ patients }: OrderTableProps) {
         </Select>
       </FormControl>
 
-      <FormControl size="sm">
+      {/* <FormControl size="sm">
         <FormLabel>Category</FormLabel>
         <Select size="sm" placeholder="All">
           <Option value="all">All</Option>
@@ -136,9 +135,9 @@ export default function OrderTable({ patients }: OrderTableProps) {
           <Option value="purchase">Purchase</Option>
           <Option value="debit">Debit</Option>
         </Select>
-      </FormControl>
+      </FormControl> */}
 
-      <FormControl size="sm">
+      {/* <FormControl size="sm">
         <FormLabel>Customer</FormLabel>
         <Select size="sm" placeholder="All">
           <Option value="all">All</Option>
@@ -149,7 +148,7 @@ export default function OrderTable({ patients }: OrderTableProps) {
           <Option value="charles">Charles Fulton</Option>
           <Option value="jay">Jay Hoper</Option>
         </Select>
-      </FormControl>
+      </FormControl> */}
     </React.Fragment>
   );
   return (
@@ -293,11 +292,9 @@ export default function OrderTable({ patients }: OrderTableProps) {
                   ID
                 </Link>
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Patient</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Dob</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Age</th>
-              <th style={{ width: 140, padding: "12px 6px" }}> </th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -322,9 +319,7 @@ export default function OrderTable({ patients }: OrderTableProps) {
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
-                <td>
-                  <Typography level="body-xs">{row.patient}</Typography>
-                </td>
+
                 <td>
                   <Typography level="body-xs">{row.name}</Typography>
                 </td>
@@ -332,7 +327,7 @@ export default function OrderTable({ patients }: OrderTableProps) {
                   <Typography level="body-xs">{row.dob}</Typography>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.age}</Typography>
+                  <Typography level="body-xs">{row.status}</Typography>
                 </td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>

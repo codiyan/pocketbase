@@ -18,7 +18,7 @@ import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import useScript from './useScript';
 import Sidebar from './components/Sidebar';
 import SidebarNew from './components/SidebarNew';
-import OrderTable from './components/OrderTable';
+import OrderTable from './views/cases/CasesTable';
 import OrderList from './components/OrderList';
 import Header from './components/Header';
 import menuItems from './nav';
@@ -26,8 +26,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 const useEnhancedEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress from MUI
+import { AuthProvider } from './auth/AuthProvider';
 
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const AppLayout = React.lazy(() => import('./AppLayout'))
 
 const Page404 = React.lazy(() => import('./views/pages/Page404'))
 const Login = React.lazy(() => import('./views/pages/Login'))
@@ -52,21 +53,23 @@ export default function App() {
   }, [status]);
 
   return (
-    <CssVarsProvider disableTransitionOnChange>
-      <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
+    <AuthProvider>
+      <CssVarsProvider disableTransitionOnChange>
+        <CssBaseline />
+        <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
 
-        <BrowserRouter>
-          <Suspense fallback={loading}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/404" element={<Page404 />} />
-              <Route path="*" element={<DefaultLayout />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </Box>
-    </CssVarsProvider>
+          <BrowserRouter>
+            <Suspense fallback={loading}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/404" element={<Page404 />} />
+                <Route path="*" element={<AppLayout />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </Box>
+      </CssVarsProvider>
+    </AuthProvider>
   );
 }
 

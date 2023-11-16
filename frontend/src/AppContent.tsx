@@ -1,9 +1,9 @@
 
 
 import React, { Suspense } from 'react';
-import OrderTable from '../components/OrderTable';
-import OrderList from '../components/OrderList';
-import menuItems from '../nav';
+import OrderTable from './views/cases/CasesTable';
+import OrderList from './components/OrderList';
+import menuItems from './nav';
 import Box from '@mui/joy/Box';
 
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
@@ -16,7 +16,9 @@ import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import Button from '@mui/joy/Button';
 import { CircularProgress } from '@mui/joy';
 import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom';
-import routes from '../routes'
+import Dashboard from './views/dashboard/Dashboard';
+import Cases from './views/cases/Cases';
+import AssignedAppointments from './views/assigned/AssignedAppointments';
 
 export default function AppContent() {
     return (
@@ -51,21 +53,31 @@ export default function AppContent() {
 
                 <Suspense fallback={<CircularProgress color="primary" />}>
                     <Routes>
-                        {routes.map((route, idx) => {
-                            return (
-                                route.element && (
-                                    <Route
-                                        key={idx}
-                                        path={route.path}
-                                        element={<route.element />}
-                                    />
-                                )
-                            )
-                        })}
+                        <Route
+                            key={'cases'}
+                            path={'/cases*'}
+                            element={<Cases />}
+                        />
 
-                        <Route path="/" element={<Navigate to="dashboard" replace />} />
+                        <Route
+                            key={'Calendar'}
+                            path={'/calendar'}
+                            element={<Dashboard />}
+                        />
+                        <Route
+                            key={'stats'}
+                            path={'/stats'}
+                            element={<Dashboard />}
+                        />
+                        <Route
+                            key={'assigned'}
+                            path={'/assigned'}
+                            element={<AssignedAppointments />}
+                        />
+
                     </Routes>
                 </Suspense>
+
 
             </Box>
         </>

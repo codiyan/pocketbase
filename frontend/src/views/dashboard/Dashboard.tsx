@@ -1,16 +1,9 @@
 import React from "react";
 import PocketBase from "pocketbase";
+import { pb } from "../../services/pocketbase";
 
 const Dashboard: React.FC = () => {
-  const apiURL =
-    process.env.REACT_APP_API_URL?.split("/api/")[0] || "http://127.0.0.1:8090";
-  const authToken = process.env.REACT_APP_AUTH_TOKEN || "";
 
-  const pb = new PocketBase(apiURL);
-
-  if (authToken) {
-    pb.authStore.save(authToken);
-  }
 
   const uploadFile = async () => {
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
@@ -29,8 +22,9 @@ const Dashboard: React.FC = () => {
   };
 
   const downloadFile = (recordId: string, fileName: string) => {
-    const fileUrl = `${apiURL}/api/files/waqar/${recordId}/${fileName}`;
-    window.open(fileUrl, "_blank");
+    // const fileUrl = `${apiURL}/api/files/waqar/${recordId}/${fileName}`;
+    // window.open(fileUrl, "_blank");
+    alert('Code was wrong for downloading')
   };
 
   return (

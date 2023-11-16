@@ -140,10 +140,9 @@ export default function Sidebar({ menuItems }: SidebarProps) {
         <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton>
-        <Typography level="title-lg">Acme Co.</Typography>
+        <Typography level="title-lg">SurgeryX</Typography>
         <ColorSchemeToggle sx={{ ml: 'auto' }} />
       </Box>
-      <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" />
       {/* ... (rest of your code) */}
       <List size="sm" sx={{ gap: 1 }}>
         {menuItems.map((menuItem, index) => (
