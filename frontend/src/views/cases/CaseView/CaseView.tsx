@@ -1,3 +1,4 @@
+import { Box, Stack, Typography } from '@mui/joy'
 import React from 'react'
 
 
@@ -42,6 +43,7 @@ export default function CaseView() {
         last_name: 'Doe',
         email: 'dd@kdk.com',
         phone: '123-456-7890',
+        status: 'scheduled',
         case_activity_item: [
             {
                 type: 'note',
@@ -86,4 +88,20 @@ export default function CaseView() {
         ]
 
     }
+
+
+
+    return <Stack>
+        <Box>
+            <Typography level='h3'>
+                {caseDetails.first_name} {caseDetails.last_name}
+            </Typography>
+        </Box>
+
+        
+
+
+    </Stack >
+
+
 }

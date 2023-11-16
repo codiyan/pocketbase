@@ -45,12 +45,6 @@ const AssignedAppointmentsTable = ({ }) => {
       type: 'surgery',
       duration: 30,
 
-      case: {
-        first_name: 'Pete',
-        last_name: 'O\'Brien',
-        email: 'sad3@kdsdk.com',
-        phone: '123-456-7890',
-      },
 
       anesthesia_type: 'choice',
       anesthesia_position: 'surpine',
@@ -65,6 +59,13 @@ const AssignedAppointmentsTable = ({ }) => {
         },
       ],
 
+
+      case: {
+        first_name: 'Pete',
+        last_name: 'O\'Brien',
+        email: 'sad3@kdsdk.com',
+        phone: '123-456-7890',
+      },
     },
 
 
