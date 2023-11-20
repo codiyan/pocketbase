@@ -149,6 +149,7 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
+          
           <ListItem>
             <ListItemButton>
               <HomeRoundedIcon />

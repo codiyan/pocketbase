@@ -33,6 +33,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
 import { Link as RouterLink } from 'react-router-dom';
+import useLogout from '../hooks/useLogout';
 
 function Toggler({
   defaultExpanded = false,
@@ -78,6 +79,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ menuItems }: SidebarProps) {
+  const logout = useLogout();
   return (
     <Sheet
       className="Sidebar"
@@ -141,6 +143,9 @@ export default function Sidebar({ menuItems }: SidebarProps) {
           <BrightnessAutoRoundedIcon />
         </IconButton>
         <Typography level="title-lg">SurgeryX</Typography>
+        <button onClick={logout}>
+          Logout
+        </button>
         <ColorSchemeToggle sx={{ ml: 'auto' }} />
       </Box>
       {/* ... (rest of your code) */}

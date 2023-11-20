@@ -18,8 +18,14 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import Button from '@mui/joy/Button';
 import AppContent from './AppContent';
+import { pb } from "./services/pocketbase";
+import { Navigate } from 'react-router-dom';
 
 export default function AppLayout() {
+
+    if (pb.authStore.isValid==false){
+        return <Navigate replace to="/login" />
+    }
     return (
         <>
             <Header />
