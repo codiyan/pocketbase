@@ -29,7 +29,7 @@ import CircularProgress from "@mui/material/CircularProgress"; // Import Circula
 import { AuthProvider } from "./auth/AuthProvider";
 
 const AppLayout = React.lazy(() => import("./AppLayout"));
-
+const Comp = React.lazy(() => import("./views/pages/Comp"));
 const Page404 = React.lazy(() => import("./views/pages/Page404"));
 const Login = React.lazy(() => import("./views/pages/Login"));
 
@@ -60,6 +60,7 @@ export default function App() {
             <Suspense fallback={loading}>
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/comp" element={<Comp />} />
                 <Route path="/404" element={<Page404 />} />
                 <Route path="*" element={<AppLayout />} />
               </Routes>
