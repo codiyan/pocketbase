@@ -1,14 +1,17 @@
 import React from 'react';
 import axios from 'axios';
+import { pb } from "../../services/pocketbase";
 
 const YourComponent: React.FC = () => {
   // Function to call the custom API
   const processOrder = async (userId: string) => {
     try {
       // Make a POST request to the custom API endpoint in PocketBase
-      const response = await axios.post('http://127.0.0.1:8090/api/process-order', {
-        userId, // Send the user ID to the backend
-      });
+      const response = await pb.send(`/process-order/${userId}`, {
+        method: 'POST',
+      })
+      
+
       console.log(response.data); // Log the response from the backend
       // Perform further actions based on the response
     } catch (error) {
