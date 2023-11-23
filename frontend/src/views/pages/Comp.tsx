@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 import { pb } from "../../services/pocketbase";
 
 const YourComponent: React.FC = () => {
@@ -8,21 +8,20 @@ const YourComponent: React.FC = () => {
     try {
       // Make a POST request to the custom API endpoint in PocketBase
       const response = await pb.send(`/process-order/${userId}`, {
-        method: 'POST',
-      })
-      
+        method: "POST",
+      });
 
       console.log(response.data); // Log the response from the backend
       // Perform further actions based on the response
     } catch (error) {
       // Handle errors if the API call fails
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const handleButtonClick = () => {
     // Replace 'yourUserId' with an actual user ID or get it from user input
-    const userId = 'kggqnu1xbrhrswr';
+    const userId = "kggqnu1xbrhrswr";
     processOrder(userId);
   };
 
