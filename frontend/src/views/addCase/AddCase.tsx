@@ -21,7 +21,7 @@ import Link from "@mui/joy/Link";
 import Card from "@mui/joy/Card";
 import CardActions from "@mui/joy/CardActions";
 import CardOverflow from "@mui/joy/CardOverflow";
-
+import HomeIcon from "@mui/icons-material/Home";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
@@ -34,6 +34,8 @@ import DropZone from "../../components/DropZone";
 import FileUpload from "../../components/FileUpload";
 import CountrySelector from "../../components/CountrySelector";
 import EditorToolbar from "../../components/EditorToolbar";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 
 export default function MyProfile() {
   return (
@@ -76,17 +78,8 @@ export default function MyProfile() {
             >
               <HomeRoundedIcon />
             </Link>
-            <Link
-              underline="hover"
-              color="neutral"
-              href="#some-link"
-              fontSize={12}
-              fontWeight={500}
-            >
-              Users
-            </Link>
             <Typography color="primary" fontWeight={500} fontSize={12}>
-              My profile
+              Add a case
             </Typography>
           </Breadcrumbs>
           <Typography
@@ -96,51 +89,9 @@ export default function MyProfile() {
               mb: 2,
             }}
           >
-            My profile
+            Add a new case
           </Typography>
         </Box>
-        <Tabs
-          defaultValue={0}
-          sx={{
-            bgcolor: "transparent",
-          }}
-        >
-          <TabList
-            tabFlex={1}
-            size="sm"
-            sx={{
-              pl: {
-                xs: 0,
-                md: 4,
-              },
-              justifyContent: "left",
-              [`&& .${tabClasses.root}`]: {
-                flex: "initial",
-                bgcolor: "transparent",
-                [`&.${tabClasses.selected}`]: {
-                  fontWeight: "600",
-                  "&::after": {
-                    height: "2px",
-                    bgcolor: "primary.500",
-                  },
-                },
-              },
-            }}
-          >
-            <Tab sx={{ borderRadius: "6px 6px 0 0" }} indicatorInset value={0}>
-              Settings
-            </Tab>
-            <Tab sx={{ borderRadius: "6px 6px 0 0" }} indicatorInset value={1}>
-              Team
-            </Tab>
-            <Tab sx={{ borderRadius: "6px 6px 0 0" }} indicatorInset value={2}>
-              Plan
-            </Tab>
-            <Tab sx={{ borderRadius: "6px 6px 0 0" }} indicatorInset value={3}>
-              Billing
-            </Tab>
-          </TabList>
-        </Tabs>
       </Box>
 
       <Stack
@@ -161,9 +112,9 @@ export default function MyProfile() {
       >
         <Card>
           <Box sx={{ mb: 1 }}>
-            <Typography level="title-md">Personal info</Typography>
+            <Typography level="title-md">Case Information</Typography>
             <Typography level="body-sm">
-              Customize how your profile information will apper to the networks.
+              Enter details about the case in the fields below.
             </Typography>
           </Box>
           <Divider />
@@ -225,8 +176,12 @@ export default function MyProfile() {
               </Stack>
               <Stack direction="row" spacing={2}>
                 <FormControl>
-                  <FormLabel>Role</FormLabel>
-                  <Input size="sm" defaultValue="UI Developer" />
+                  <FormLabel>Phone</FormLabel>
+                  <Input
+                    startDecorator={<LocalPhoneIcon />}
+                    size="sm"
+                    placeholder="+1234234234"
+                  />
                 </FormControl>
                 <FormControl sx={{ flexGrow: 1 }}>
                   <FormLabel>Email</FormLabel>
@@ -234,8 +189,47 @@ export default function MyProfile() {
                     size="sm"
                     type="email"
                     startDecorator={<EmailRoundedIcon />}
-                    placeholder="email"
-                    defaultValue="siriwatk@test.com"
+                    placeholder="johndoe@test.com"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <FormControl>
+                  <FormLabel>SSN</FormLabel>
+                  <Input
+                    startDecorator={<Grid3x3Icon />}
+                    size="sm"
+                    placeholder="1234234234"
+                  />
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Address</FormLabel>
+                  <Input
+                    size="sm"
+                    type="email"
+                    startDecorator={<HomeIcon />}
+                    placeholder="St. Address, City, State, Zip Code"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>SSN</FormLabel>
+                  <Input
+                    startDecorator={<Grid3x3Icon />}
+                    size="sm"
+                    placeholder="1234234234"
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Address</FormLabel>
+                  <Input
+                    size="sm"
+                    type="email"
+                    startDecorator={<HomeIcon />}
+                    placeholder="St. Address, City, State, Zip Code"
                     sx={{ flexGrow: 1 }}
                   />
                 </FormControl>
