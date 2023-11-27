@@ -11,6 +11,7 @@ import IconButton from "@mui/joy/IconButton";
 import Textarea from "@mui/joy/Textarea";
 import Stack from "@mui/joy/Stack";
 import Select from "@mui/joy/Select";
+// import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
 import Tabs from "@mui/joy/Tabs";
@@ -36,8 +37,28 @@ import CountrySelector from "../../components/CountrySelector";
 import EditorToolbar from "../../components/EditorToolbar";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
+import { pb } from "../../services/pocketbase";
+import Checkbox from "@mui/joy/Checkbox";
+import BusinessIcon from "@mui/icons-material/Business";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import { useState } from "react";
 
 export default function MyProfile() {
+  const [data, setdata] = useState({
+    status: "new",
+  });
+  //Write on change function
+  const handleChange = (e: any) => {
+    setdata({ ...data, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(data);
+
+    const record = await pb.collection("cases").create(data);
+  };
+  const [Surgery, setSurgery] = useState(false);
+
   return (
     <Box
       sx={{
@@ -166,11 +187,22 @@ export default function MyProfile() {
                     gap: 2,
                   }}
                 >
-                  <Input size="sm" placeholder="First name" />
                   <Input
                     size="sm"
+                    name="first_name"
+                    placeholder="First name"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                  />
+                  <Input
+                    size="sm"
+                    name="last_name"
                     placeholder="Last name"
                     sx={{ flexGrow: 1 }}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                   />
                 </FormControl>
               </Stack>
@@ -178,6 +210,10 @@ export default function MyProfile() {
                 <FormControl>
                   <FormLabel>Phone</FormLabel>
                   <Input
+                    name="phone_number"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     startDecorator={<LocalPhoneIcon />}
                     size="sm"
                     placeholder="+1234234234"
@@ -189,6 +225,10 @@ export default function MyProfile() {
                     size="sm"
                     type="email"
                     startDecorator={<EmailRoundedIcon />}
+                    name="email"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     placeholder="johndoe@test.com"
                     sx={{ flexGrow: 1 }}
                   />
@@ -198,9 +238,13 @@ export default function MyProfile() {
                 <FormControl>
                   <FormLabel>SSN</FormLabel>
                   <Input
+                    name="ssn"
                     startDecorator={<Grid3x3Icon />}
                     size="sm"
                     placeholder="1234234234"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                   />
                 </FormControl>
                 <FormControl sx={{ flexGrow: 1 }}>
@@ -215,28 +259,73 @@ export default function MyProfile() {
                 </FormControl>
               </Stack>
               <Stack direction="row" spacing={2}>
-                <FormControl sx={{ flexGrow: 1 }}>
-                  <FormLabel>SSN</FormLabel>
-                  <Input
-                    startDecorator={<Grid3x3Icon />}
-                    size="sm"
-                    placeholder="1234234234"
-                  />
-                </FormControl>
                 <FormControl>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>Sex</FormLabel>
+                  <Select
+                    name="sex"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    placeholder="Male/Female"
+                    required
+                    size="sm"
+                    sx={{ minWidth: 200 }}
+                  >
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                    <Option value="other">Other</Option>
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Facility</FormLabel>
                   <Input
                     size="sm"
                     type="email"
-                    startDecorator={<HomeIcon />}
+                    startDecorator={<BusinessIcon />}
                     placeholder="St. Address, City, State, Zip Code"
-                    sx={{ flexGrow: 1 }}
                   />
                 </FormControl>
               </Stack>
-              <div>
-                <CountrySelector />
-              </div>
+              <Stack direction="row" spacing={5}>
+                <FormControl size={"md"}>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <Input
+                    size="sm"
+                    type="date"
+                    slotProps={{
+                      input: {
+                        min: "2018-06-07T00:00",
+                        max: "2018-06-14T00:00",
+                      },
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Time</FormLabel>
+                  <Input type="time" size="sm" />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={5}>
+                <Checkbox
+                  label="Surgery required"
+                  variant="outlined"
+                  size="sm"
+                  onChange={(e) => {
+                    setSurgery(e.target.checked);
+                  }}
+                  sx={{ position: "relative", top: 30 }}
+                />
+                <FormControl>
+                  <FormLabel>Surgeon Assigned</FormLabel>
+                  <Input
+                    disabled={!Surgery}
+                    size="sm"
+                    type="email"
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="Dr.John Doe"
+                  />
+                </FormControl>
+              </Stack>
               <div>
                 <FormControl sx={{ display: { sm: "contents" } }}>
                   <FormLabel>Timezone</FormLabel>
@@ -315,7 +404,6 @@ export default function MyProfile() {
                 </FormControl>
               </Stack>
             </Stack>
-
             <FormControl>
               <FormLabel>Role</FormLabel>
               <Input size="sm" defaultValue="UI Developer" />
@@ -331,7 +419,6 @@ export default function MyProfile() {
                 sx={{ flexGrow: 1 }}
               />
             </FormControl>
-
             <div>
               <CountrySelector />
             </div>
@@ -359,32 +446,35 @@ export default function MyProfile() {
               </FormControl>
             </div>
           </Stack>
-          <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
-            <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
-                Cancel
-              </Button>
-              <Button size="sm" variant="solid">
-                Save
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
-        <Card>
-          <Box sx={{ mb: 1 }}>
-            <Typography level="title-md">Bio</Typography>
+          <Box sx={{ mb: 1, mt: 3 }}>
+            <Typography level="title-md">Procedure Description</Typography>
             <Typography level="body-sm">
-              Write a short introduction to be displayed on your profile
+              Write description about the procedure in the field below.
             </Typography>
           </Box>
-          <Divider />
           <Stack spacing={2} sx={{ my: 1 }}>
-            <EditorToolbar />
             <Textarea
               size="sm"
               minRows={4}
               sx={{ mt: 1.5 }}
-              defaultValue="I'm a software developer based in Bangkok, Thailand. My goal is to solve UI problems with neat CSS without using too much JavaScript."
+              placeholder="Left 1st metatarsal- cuneiform fusion, modified McBride, Akin osteotomy, left 2nd digit hammer toe correction"
+            />
+            <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
+              275 characters left
+            </FormHelperText>
+          </Stack>
+          <Box sx={{ mb: 1, mt: 3 }}>
+            <Typography level="title-md">Insurance Details</Typography>
+            <Typography level="body-sm">
+              Write description about the procedure in the field below.
+            </Typography>
+          </Box>
+          <Stack spacing={2} sx={{ my: 1 }}>
+            <Textarea
+              size="sm"
+              minRows={4}
+              sx={{ mt: 1.5 }}
+              placeholder="Insurance company name, policy number, etc."
             />
             <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
               275 characters left
@@ -395,42 +485,13 @@ export default function MyProfile() {
               <Button size="sm" variant="outlined" color="neutral">
                 Cancel
               </Button>
-              <Button size="sm" variant="solid">
-                Save
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
-        <Card>
-          <Box sx={{ mb: 1 }}>
-            <Typography level="title-md">Portfolio projects</Typography>
-            <Typography level="body-sm">
-              Share a few snippets of your work.
-            </Typography>
-          </Box>
-
-          <Divider />
-          <Stack spacing={2} sx={{ my: 1 }}>
-            <DropZone />
-            <FileUpload
-              icon={<InsertDriveFileRoundedIcon />}
-              fileName="Tech design requirements.pdf"
-              fileSize="200 kB"
-              progress={100}
-            />
-            <FileUpload
-              icon={<VideocamRoundedIcon />}
-              fileName="Dashboard prototype recording.mp4"
-              fileSize="16 MB"
-              progress={40}
-            />
-          </Stack>
-          <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
-            <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
-                Cancel
-              </Button>
-              <Button size="sm" variant="solid">
+              <Button
+                size="sm"
+                variant="solid"
+                onClick={(e) => {
+                  handleSubmit(e);
+                }}
+              >
                 Save
               </Button>
             </CardActions>
