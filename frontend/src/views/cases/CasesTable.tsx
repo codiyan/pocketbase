@@ -32,7 +32,7 @@ import { downloadCSV } from "../../lib/utils";
 type Patient = {
   id: string;
   name: string;
-  dob: number;
+  dob: string;
   status: string;
 };
 
@@ -91,7 +91,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+        <MenuItem>View/Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -295,6 +295,7 @@ export default function CasesTable({ patients }: OrderTableProps) {
               <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Dob</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
