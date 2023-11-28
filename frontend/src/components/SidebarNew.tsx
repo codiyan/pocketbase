@@ -84,10 +84,11 @@ export default function Sidebar({ menuItems }: SidebarProps) {
     <Sheet
       className="Sidebar"
       sx={{
-        position: {
-          sm: "fixed",
-          md: "sticky",
-        },
+        position: "fixed",
+        // position: {
+        //   sm: "fixed",
+        //   md: "sticky",
+        // },
         transform: {
           xs: "translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))",
           md: "none",
@@ -136,12 +137,15 @@ export default function Sidebar({ menuItems }: SidebarProps) {
         onClick={() => closeSidebar()}
       />
 
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton>
         <Typography level="title-lg">SurgeryX</Typography>
-        <button onClick={logout}>Logout</button>
+        {/* Logout button */}
+        <IconButton variant="soft" color="primary" size="sm" className="logout-button" onClick={logout}>
+          <LogoutRoundedIcon />
+        </IconButton>
         <ColorSchemeToggle sx={{ ml: "auto" }} />
       </Box>
       {/* ... (rest of your code) */}
@@ -198,7 +202,6 @@ export default function Sidebar({ menuItems }: SidebarProps) {
           </ListItem>
         ))}
       </List>
-      {/* ... (rest of your code) */}
     </Sheet>
   );
 }

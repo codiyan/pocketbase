@@ -27,6 +27,11 @@ export default function AppContent() {
         component="main"
         className="MainContent"
         sx={{
+          marginLeft: {
+           md: "var(--Sidebar-width)"
+          }
+          ,
+
           px: {
             xs: 2,
             md: 6,

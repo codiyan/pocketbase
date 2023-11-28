@@ -17,44 +17,31 @@ import NewPatient from "./NewPatient";
 import { Link, Route, Routes } from "react-router-dom";
 
 export default function Cases() {
-  const [patients, setPatients] = useState([
-    {
-      id: "INV-1234",
-      name: "Olivia Ryhe",
-      dob: "Feb 3, 2023",
-      status: "Refunded",
-    },
-    {
-      id: "INV-1233",
-      name: "Steve Hampton",
-      dob: "Feb 3, 2023",
-      status: "Paid",
-    },
-    {
-      id: "INV-1232",
-      name: "Ciaran Murray",
-      dob: "Feb 3, 2023",
-      status: "Refunded",
-    },
-    {
-      id: "INV-1231",
-      name: "Maria Macdonald",
-      dob: "Feb 3, 2023",
-      status: "Refunded",
-    },
-    {
-      id: "INV-1230",
-      name: "Charles Fulton",
-      dob: "Feb 3, 2023",
-      status: "Cancelled",
-    },
-  ]);
+  const [patients, setPatients] = useState([{ id: "", name: "", dob: "", status: ""}]);
+
+  // write a function to convert 2023-11-01 12:00:00.000Z to 2023-11-01
+  const convertDate = (date: string) => {
+    const dateArray = date.split(" ");
+    return dateArray[0];
+  };
 
   const getList = async () => {
     const records = await pb.collection("cases").getFullList({
-      sort: "-created",
+      sort: "-created",requestKey:"null",
     });
     console.log(records);
+    // create an array of jsons of records using only id, name, dob, status
+    const patients = records.map((record) => {
+      return {
+        id: record.id,
+        name: record.first_name + " " + record.last_name,
+        dob: convertDate(record.dob),
+        status: record.status,
+      };
+    });
+    // console.log(patients);
+    
+    setPatients(patients);
   };
 
   useEffect(() => {

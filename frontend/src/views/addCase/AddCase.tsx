@@ -45,7 +45,7 @@ import { useState } from "react";
 
 export default function MyProfile() {
   const [data, setdata] = useState({
-    status: "new",
+    status: "pending",
   });
   //Write on change function
   const handleChange = (e: any) => {
