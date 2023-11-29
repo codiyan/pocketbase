@@ -55,6 +55,7 @@ export default function Caseview() {
   const caseId = params.id;
   const [data, setData] = React.useState<any>({});
   const [editMode, setEditMode] = React.useState(false);
+  const [Surgery, setSurgery] = useState(false);
 
   React.useEffect(() => {
     const fetchCaseData = async (caseId: any) => {
@@ -377,14 +378,16 @@ export default function Caseview() {
                   disabled={!editMode}
                   variant="outlined"
                   size="sm"
-                  onChange={(e) => {}}
+                  onChange={(e) => {
+                    setSurgery(e.target.checked);
+                    }}
                   sx={{ position: "relative", top: 30 }}
                 />
                 <FormControl>
                   <FormLabel>Surgeon Assigned</FormLabel>
                   <Input
                     //   disabled={!Surgery}
-                    disabled={!editMode}
+                    disabled={!editMode || !Surgery}
                     size="sm"
                     type="email"
                     startDecorator={<LocalHospitalIcon />}
