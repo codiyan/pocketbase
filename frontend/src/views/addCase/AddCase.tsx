@@ -1,6 +1,5 @@
 import * as React from "react";
 import AspectRatio from "@mui/joy/AspectRatio";
-import { useParams } from "react-router-dom";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Divider from "@mui/joy/Divider";
@@ -32,75 +31,33 @@ import VideocamRoundedIcon from "@mui/icons-material/VideocamRounded";
 import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
-import DropZone from "../../../components/DropZone";
-import FileUpload from "../../../components/FileUpload";
-import CountrySelector from "../../../components/CountrySelector";
-import EditorToolbar from "../../../components/EditorToolbar";
+import DropZone from "../../components/DropZone";
+import FileUpload from "../../components/FileUpload";
+import CountrySelector from "../../components/CountrySelector";
+import EditorToolbar from "../../components/EditorToolbar";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
-import { pb } from "../../../services/pocketbase";
+import { pb } from "../../services/pocketbase";
 import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import { useState } from "react";
 
-interface CaseData {
-  first_name: string;
-  last_name: string;
-  // Add other properties as needed
-}
-
-export default function Caseview() {
-  const params = useParams();
-  const caseId = params.id;
-  const [data, setData] = React.useState<any>({});
-  const [editMode, setEditMode] = React.useState(false);
-  const [Surgery, setSurgery] = useState(false);
-
-  React.useEffect(() => {
-    const fetchCaseData = async (caseId: any) => {
-      try {
-        const record = await pb.collection("cases").getOne(caseId);
-        setData(record);
-      } catch (error) {
-        console.error("Error fetching case data:", error);
-      }
-    };
-
-    fetchCaseData(caseId);
-  }, [caseId]);
-
+export default function MyProfile() {
+  const [data, setdata] = useState({
+    status: "pending",
+  });
+  //Write on change function
   const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setData((prevData: any) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setdata({ ...data, [e.target.name]: e.target.value });
   };
-
-  React.useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  const handleEditModeToggle = () => {
-    setEditMode((prevEditMode) => !prevEditMode);
-  };
-
-  const updateData = async (caseId: any) => {
-    try {
-      const record = await pb.collection("cases").update(caseId, data);
-
-      console.log("Case updated successfully!");
-    } catch (error) {
-      console.error("Error updating case:", error);
-    }
-  };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(data);
-    updateData(caseId);
+
+    const record = await pb.collection("cases").create(data);
   };
+  const [Surgery, setSurgery] = useState(false);
 
   return (
     <Box
@@ -143,16 +100,8 @@ export default function Caseview() {
               <HomeRoundedIcon />
             </Link>
             <Typography color="primary" fontWeight={500} fontSize={12}>
-              view/edit
+              Add a case
             </Typography>
-            <Button
-              size="sm"
-              variant="outlined"
-              color="primary"
-              onClick={handleEditModeToggle}
-            >
-              {editMode ? "Switch to View Mode" : "Switch to Edit Mode"}
-            </Button>
           </Breadcrumbs>
           <Typography
             level="h2"
@@ -161,7 +110,7 @@ export default function Caseview() {
               mb: 2,
             }}
           >
-            Case Details
+            Add a new case
           </Typography>
         </Box>
       </Box>
@@ -242,8 +191,6 @@ export default function Caseview() {
                     size="sm"
                     name="first_name"
                     placeholder="First name"
-                    value={data.first_name}
-                    disabled={!editMode}
                     onChange={(e) => {
                       handleChange(e);
                     }}
@@ -251,9 +198,7 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     name="last_name"
-                    disabled={!editMode}
                     placeholder="Last name"
-                    value={data.last_name}
                     sx={{ flexGrow: 1 }}
                     onChange={(e) => {
                       handleChange(e);
@@ -266,11 +211,9 @@ export default function Caseview() {
                   <FormLabel>Phone</FormLabel>
                   <Input
                     name="phone_number"
-                    disabled={!editMode}
                     onChange={(e) => {
                       handleChange(e);
                     }}
-                    value={data.phone_number}
                     startDecorator={<LocalPhoneIcon />}
                     size="sm"
                     placeholder="+1234234234"
@@ -281,8 +224,6 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     type="email"
-                    disabled={!editMode}
-                    value={data.email}
                     startDecorator={<EmailRoundedIcon />}
                     name="email"
                     onChange={(e) => {
@@ -299,8 +240,6 @@ export default function Caseview() {
                   <Input
                     name="ssn"
                     startDecorator={<Grid3x3Icon />}
-                    value={data.ssn}
-                    disabled={!editMode}
                     size="sm"
                     placeholder="1234234234"
                     onChange={(e) => {
@@ -313,7 +252,6 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     type="email"
-                    disabled={!editMode}
                     startDecorator={<HomeIcon />}
                     placeholder="St. Address, City, State, Zip Code"
                     sx={{ flexGrow: 1 }}
@@ -325,8 +263,6 @@ export default function Caseview() {
                   <FormLabel>Sex</FormLabel>
                   <Select
                     name="sex"
-                    value={data.sex}
-                    disabled={!editMode}
                     onChange={(e) => {
                       handleChange(e);
                     }}
@@ -345,7 +281,6 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     type="email"
-                    disabled={!editMode}
                     startDecorator={<BusinessIcon />}
                     placeholder="St. Address, City, State, Zip Code"
                   />
@@ -357,8 +292,6 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     type="date"
-                    disabled={!editMode}
-                    value={data.dob}
                     slotProps={{
                       input: {
                         min: "2018-06-07T00:00",
@@ -369,25 +302,23 @@ export default function Caseview() {
                 </FormControl>
                 <FormControl>
                   <FormLabel>Time</FormLabel>
-                  <Input disabled={!editMode} type="time" size="sm" />
+                  <Input type="time" size="sm" />
                 </FormControl>
               </Stack>
               <Stack direction="row" spacing={5}>
                 <Checkbox
                   label="Surgery required"
-                  disabled={!editMode}
                   variant="outlined"
                   size="sm"
                   onChange={(e) => {
                     setSurgery(e.target.checked);
-                    }}
+                  }}
                   sx={{ position: "relative", top: 30 }}
                 />
                 <FormControl>
                   <FormLabel>Surgeon Assigned</FormLabel>
                   <Input
-                    //   disabled={!Surgery}
-                    disabled={!editMode || !Surgery}
+                    disabled={!Surgery}
                     size="sm"
                     type="email"
                     startDecorator={<LocalHospitalIcon />}
@@ -399,7 +330,6 @@ export default function Caseview() {
                 <FormControl sx={{ display: { sm: "contents" } }}>
                   <FormLabel>Timezone</FormLabel>
                   <Select
-                    disabled={!editMode}
                     size="sm"
                     startDecorator={<AccessTimeFilledRoundedIcon />}
                     defaultValue="1"
@@ -524,7 +454,6 @@ export default function Caseview() {
           </Box>
           <Stack spacing={2} sx={{ my: 1 }}>
             <Textarea
-              disabled={!editMode}
               size="sm"
               minRows={4}
               sx={{ mt: 1.5 }}
@@ -542,7 +471,6 @@ export default function Caseview() {
           </Box>
           <Stack spacing={2} sx={{ my: 1 }}>
             <Textarea
-              disabled={!editMode}
               size="sm"
               minRows={4}
               sx={{ mt: 1.5 }}
@@ -554,33 +482,18 @@ export default function Caseview() {
           </Stack>
           <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
             <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-              {editMode ? (
-                <>
-                  <Button size="sm" variant="outlined" color="neutral">
-                    Cancel
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="solid"
-                    onClick={handleSubmit}
-                  >
-                    Save
-                  </Button>
-                </>
-              ) : (
-                <Box sx={{ display: 'none' }}>
-                  {/* Hidden when not in edit mode */}
-                  <Button size="sm" variant="outlined" color="neutral">
-                    Cancel
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="solid"
-                  >
-                    Save
-                  </Button>
-                </Box>
-              )}
+              <Button size="sm" variant="outlined" color="neutral">
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                variant="solid"
+                onClick={(e) => {
+                  handleSubmit(e);
+                }}
+              >
+                Save
+              </Button>
             </CardActions>
           </CardOverflow>
         </Card>

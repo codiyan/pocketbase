@@ -28,11 +28,12 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import { downloadCSV } from "../../lib/utils";
+import { useNavigate } from 'react-router-dom';
 
 type Patient = {
   id: string;
   name: string;
-  dob: number;
+  dob: string;
   status: string;
 };
 
@@ -79,7 +80,7 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
+function RowMenu({ row, navigate }: { row: Patient; navigate: (id: string) => void }) {
   return (
     <Dropdown>
       <MenuButton
@@ -91,7 +92,7 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+      <MenuItem onClick={() => navigate(row.id)}>View/Edit</MenuItem>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Move</MenuItem>
         <Divider />
@@ -105,6 +106,11 @@ export default function CasesTable({ patients }: OrderTableProps) {
   const [order, setOrder] = useState<Order>("desc");
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const navigateToCase = (id: string) => {
+    navigate(`/cases/${id}`);
+  }
 
   const handleDownloadSingle = (patientId: string) => {
     const patientData = patients.filter((p) => p.id === patientId);
@@ -293,8 +299,9 @@ export default function CasesTable({ patients }: OrderTableProps) {
                 </Link>
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Dob</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Date of birth</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -338,7 +345,7 @@ export default function CasesTable({ patients }: OrderTableProps) {
                     >
                       Download
                     </Link>
-                    <RowMenu />
+                    <RowMenu row={row} navigate={navigateToCase}/>
                   </Box>
                 </td>
               </tr>
