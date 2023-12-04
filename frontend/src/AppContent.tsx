@@ -19,6 +19,7 @@ import Cases from "./views/cases/Cases";
 import AssignedAppointments from "./views/assigned/AssignedAppointments";
 import CaseView from "./views/cases/CaseView/CaseView";
 import AddCase from "./views/addCase/AddCase";
+import DetailView from "./views/cases/CaseView/DetailView";
 
 export default function AppContent() {
   return (
@@ -28,7 +29,7 @@ export default function AppContent() {
         className="MainContent"
         sx={{
           marginLeft: {
-           md: "var(--Sidebar-width)"
+            md: "var(--Sidebar-width)"
           }
           ,
 
@@ -56,6 +57,7 @@ export default function AppContent() {
       >
         <Suspense fallback={<CircularProgress color="primary" />}>
           <Routes>
+            <Route key={"cases"} path={"/cases/detail"} element={<DetailView />} />
             <Route key={"cases"} path={"/cases/:id"} element={<CaseView />} />
             <Route key={"cases"} path={"/cases*"} element={<Cases />} />
 
