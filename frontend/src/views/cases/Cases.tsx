@@ -2,17 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import OrderTable from "./CasesTable";
 import OrderList from "../../components/OrderList";
-import { Box, Button, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
+import { Box, Button, Typography } from "@mui/joy";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import { downloadCSV } from "../../lib/utils";
 import NewPatient from "./NewPatient";
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from "react-router-dom";
+import { pb } from "../../services/pocketbase";
 
 export default function Cases() {
-  const [patients, setPatients] = useState([]);
+  const [patients, setPatients] = useState<any[]>([]);
 
+  // pb.autoCancellation(false);
+  async function getCases() {
+    const records = await pb.collection("cases").getFullList({
+      sort: "-created",
+      requestKey: null,
+    });
+    console.log("records", records);
+    setPatients(records);
+  }
   useEffect(() => {
-
+    getCases();
   }, []);
 
   const handleDownloadAll = () => {

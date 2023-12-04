@@ -34,6 +34,9 @@ type Patient = {
   name: string;
   dob: number;
   status: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
 };
 
 type OrderTableProps = {
@@ -292,9 +295,14 @@ export default function CasesTable({ patients }: OrderTableProps) {
                   ID
                 </Link>
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
+              {/* <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Dob</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Status</th> */}
+              <th style={{ width: 140, padding: "12px 6px" }}>Firstname</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Lastname</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Phone</th>
+              <th style={{ width: 140, padding: "12px 6px" }}></th>
             </tr>
           </thead>
           <tbody>
@@ -321,13 +329,16 @@ export default function CasesTable({ patients }: OrderTableProps) {
                 </td>
 
                 <td>
-                  <Typography level="body-xs">{row.name}</Typography>
+                  <Typography level="body-xs">{row.first_name}</Typography>
                 </td>
                 <td>
-                  <Typography level="body-xs">{row.dob}</Typography>
+                  <Typography level="body-xs">{row.last_name}</Typography>
                 </td>
                 <td>
                   <Typography level="body-xs">{row.status}</Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">{row.phone_number}</Typography>
                 </td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
