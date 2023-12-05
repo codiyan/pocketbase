@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
@@ -31,8 +31,8 @@ import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRound
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 // import three icons for notes, attachments and schedule
 
-
-import { TabPanel } from '@mui/joy';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { Chip, TabPanel } from '@mui/joy';
 import SurgeryDetails from './SurgeryDetails';
 
 import AccordionGroup from '@mui/joy/AccordionGroup';
@@ -61,8 +61,15 @@ import ZoomInRoundedIcon from '@mui/icons-material/ZoomInRounded';
 import SpatialTrackingRoundedIcon from '@mui/icons-material/SpatialTrackingRounded';
 import SettingsVoiceRoundedIcon from '@mui/icons-material/SettingsVoiceRounded';
 import ActivityLogComponent from './ActivityLog';
+import AddActivity from './AddActivty';
+import { useParams } from 'react-router-dom';
+import { pb } from '../../../services/pocketbase';
+import { calculateAge } from '../../../lib/utils';
+import { ca } from 'date-fns/locale';
 export default function DetailView() {
-    const caseDetails = {
+    const { id } = useParams();
+    const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
+    const [caseDetails, setCaseDetails] = useState({
         first_name: 'John',
         last_name: 'Doe',
         email: 'dd@kdk.com',
@@ -133,12 +140,36 @@ export default function DetailView() {
                 ],
             }
         ]
-    }
-    useEffect(() => {
-        console.log('caseDetails', caseDetails)
+    });
 
-    }
-        , [])
+
+    // make async await
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (id) {
+                    const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case)" });
+                    // Process caseDetailsResponse as needed]
+                    if (caseDetailsResponse) {
+                        // calculate age using util method calculateAge
+                        let age = calculateAge(caseDetailsResponse.dob);
+                        caseDetailsResponse.age = age;
+                        setCaseDetailsNew(caseDetailsResponse);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching case details:', error);
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleOpen = () => setOpen(true);
+
     return <Stack>
         <Box
             sx={{
@@ -163,7 +194,7 @@ export default function DetailView() {
                         <Stack>
                             <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={3}
                             >
-                                <Stack direction="row" alignItems="flex-start" justifyContent="flex-start" spacing={3}>
+                                <Stack direction={{ md: 'row', sm: 'column' }} alignItems={{ md: "flex-start", sm: 'center' }} justifyContent={"center"} spacing={3}>
                                     <AspectRatio
                                         ratio="1"
                                         maxHeight={200}
@@ -176,7 +207,7 @@ export default function DetailView() {
                                             alt=""
                                         />
                                     </AspectRatio>
-                                    <Stack  >
+                                    <Stack direction={{ md: 'row', sm: 'column' }} justifyContent="space-between" spacing={3} >
                                         <Typography
                                             level="h2"
                                             sx={{
@@ -185,18 +216,20 @@ export default function DetailView() {
 
                                             }}
                                         >
-                                            {caseDetails.first_name} {caseDetails.last_name}
+                                            {/* every place add null checks */}
+                                            {caseDetailsNew?.first_name} {caseDetailsNew?.last_name}
                                         </Typography>
-                                        <Stack direction="row" justifyContent="space-between" spacing="6">
+                                        <Stack direction="column" justifyContent="space-between " >
                                             <Typography
                                                 level="title-sm"
                                                 sx={{
                                                     mt: 1,
                                                     mb: 2,
 
+                                                    mx: 2,
                                                 }}
                                             >
-                                                Age {caseDetails.age}
+                                                Age {caseDetailsNew?.age}
                                             </Typography>
                                             <Typography
                                                 level="title-sm"
@@ -210,51 +243,46 @@ export default function DetailView() {
                                                 Gender {caseDetails.gender}
                                             </Typography>
                                         </Stack>
-                                        <Stack direction="row" justifyContent="space-between">
+                                        <Stack direction="column" justifyContent="space-between">
+
                                             <Typography
                                                 level="title-sm"
                                                 sx={{
                                                     mt: 1,
                                                     mb: 2,
+                                                    mx: 2,
                                                 }}
                                             >
-                                                Age {caseDetails.age}
+                                                Status
+
+                                                <Chip
+                                                    sx={{ ml: 3 }}
+                                                    color="primary"
+                                                >
+                                                    {caseDetailsNew?.status}
+                                                </Chip>
+
                                             </Typography>
                                             <Typography
                                                 level="title-sm"
                                                 sx={{
                                                     mt: 1,
                                                     mb: 2,
-
+                                                    mx: 2,
                                                 }}
                                             >
-                                                Gender {caseDetails.gender}
+                                                Email {caseDetailsNew?.email}
                                             </Typography>
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                                <Stack direction="row" alignItems="baseline" justifyContent="flex-start" spacing={3}>
-                                    <Typography
-                                        level="h2"
-                                        sx={{
-                                            mt: 1,
-                                            mb: 2,
 
-                                        }}
-                                    >
-                                        {caseDetails.first_name} {caseDetails.last_name}
-                                    </Typography>
-                                    <Typography
-                                        level="title-sm"
-                                        sx={{
-                                            mt: 1,
-                                            mb: 2,
-
-                                        }}
-                                    >
-                                        Age {caseDetails.age}
-                                    </Typography>
-                                </Stack>
+                            </Stack>
+                            <Stack direction="row-reverse" alignItems="baseline" justifyContent="flex-end" spacing={3}>
+                                <IconButton variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                                    <EditNoteIcon />
+                                </IconButton >
+                                <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
                             </Stack>
                         </Stack>
                     </Card>

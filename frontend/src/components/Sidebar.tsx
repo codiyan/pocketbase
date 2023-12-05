@@ -32,6 +32,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 function Toggler({
   defaultExpanded = false,
@@ -149,7 +150,7 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-          
+
           <ListItem>
             <ListItemButton>
               <HomeRoundedIcon />
