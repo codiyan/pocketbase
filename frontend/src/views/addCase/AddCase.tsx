@@ -85,7 +85,7 @@ export default function MyProfile() {
             },
           }}
         >
-          <Breadcrumbs
+          {/* <Breadcrumbs
             size="sm"
             aria-label="breadcrumbs"
             separator={<ChevronRightRoundedIcon />}
@@ -102,7 +102,7 @@ export default function MyProfile() {
             <Typography color="primary" fontWeight={500} fontSize={12}>
               Add a case
             </Typography>
-          </Breadcrumbs>
+          </Breadcrumbs> */}
           <Typography
             level="h2"
             sx={{

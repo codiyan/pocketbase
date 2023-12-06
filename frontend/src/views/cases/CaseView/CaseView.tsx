@@ -42,6 +42,7 @@ import { pb } from "../../../services/pocketbase";
 import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import ArticleIcon from '@mui/icons-material/Article';
 import { useState } from "react";
 
 interface CaseData {
@@ -128,7 +129,7 @@ export default function Caseview() {
             },
           }}
         >
-          <Breadcrumbs
+          {/* <Breadcrumbs
             size="sm"
             aria-label="breadcrumbs"
             separator={<ChevronRightRoundedIcon />}
@@ -145,15 +146,8 @@ export default function Caseview() {
             <Typography color="primary" fontWeight={500} fontSize={12}>
               view/edit
             </Typography>
-            <Button
-              size="sm"
-              variant="outlined"
-              color="primary"
-              onClick={handleEditModeToggle}
-            >
-              {editMode ? "Switch to View Mode" : "Switch to Edit Mode"}
-            </Button>
-          </Breadcrumbs>
+
+          </Breadcrumbs> */}
           <Typography
             level="h2"
             sx={{
@@ -183,11 +177,23 @@ export default function Caseview() {
         }}
       >
         <Card>
-          <Box sx={{ mb: 1 }}>
+          <Box sx={{ mb: 1,display:"flex", justifyContent:"space-between" }}>
+            <Box>
             <Typography level="title-md">Case Information</Typography>
             <Typography level="body-sm">
               Enter details about the case in the fields below.
             </Typography>
+            </Box>
+            <Button
+              size="sm"
+              variant="outlined"
+              color="primary"
+              onClick={handleEditModeToggle}
+            >
+              {/* {editMode ? "Switch to View Mode" : "Switch to Edit Mode"} */}
+              {editMode ? <ArticleIcon /> : <EditRoundedIcon />}
+
+            </Button>
           </Box>
           <Divider />
           <Stack
