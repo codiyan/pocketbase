@@ -109,7 +109,7 @@ export default function CasesTable({ patients }: OrderTableProps) {
   const navigate = useNavigate();
 
   const navigateToCase = (id: string) => {
-    navigate(`/cases/details/${id}`);
+    navigate(`/cases/detail/${id}`);
   }
 
   const handleDownloadSingle = (patientId: string) => {
