@@ -62,6 +62,7 @@ export default function AppContent() {
             <Route key={"cases"} path={"/cases/:id"} element={<CaseView />} />
 
             <Route key={"cases"} path={"/cases*"} element={<Cases />} />
+            <Route key={"cases"} path={"/cases/*"} element={<Cases />} />
 
             <Route
               key={"Calendar"}

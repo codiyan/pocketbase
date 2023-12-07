@@ -35,11 +35,14 @@ interface ActivityLogProps {
 
 
 const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }) => {
-    return (
 
+
+
+
+    return (
         <>
 
-            {case_activity_item.map((activityItem, index) => (
+            {case_activity_item ? case_activity_item.map((activityItem, index) => (
                 <Accordion key={index}>
                     <AccordionSummary>
                         <Avatar color="primary">
@@ -65,7 +68,7 @@ const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }
                     <AccordionDetails>
 
                         {activityItem.type === 'note' && (
-                            <Typography level="body-sm">{activityItem.note}</Typography>
+                            <Typography level="body-sm">{activityItem?.meta?.note}</Typography>
                         )}
                         {/* {activityItem.type === 'surgery_scheduled_added' && (
                             <SurgeryDetails surgeryDetails={activityItem.meta} />
@@ -73,7 +76,7 @@ const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }
                         {/* Include other details based on the type */}
                     </AccordionDetails>
                 </Accordion>
-            ))}
+            )) : <Typography level="body-sm">No Activity</Typography>}
         </>
 
 
