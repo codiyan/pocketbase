@@ -41,16 +41,20 @@ import { pb } from "../../services/pocketbase";
 import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import DefaultPic from "../../assets/default-pic.jpg";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 export default function MyProfile() {
   const [data, setdata] = useState({
-    status: "pending",
+    procedure_details: [],
+    status: "new",
   });
   //Write on change function
   const handleChange = (e: any) => {
     setdata({ ...data, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(data);
@@ -58,6 +62,26 @@ export default function MyProfile() {
     const record = await pb.collection("cases").create(data);
   };
   const [Surgery, setSurgery] = useState(false);
+
+  const [procedure, setProcedure] = useState("");
+  const [cptCode, setCptCode] = useState("");
+
+  const handleAddProcedure = () => {
+    // Only add if both procedure and cptCode are present
+    if (procedure && cptCode) {
+      const updatedProcedures = [...data.procedure_details, { procedure, cptCode }];
+      setdata({ ...data, procedure_details: updatedProcedures });
+      setProcedure(""); // Clear procedure input
+      setCptCode(""); // Clear CPT code input
+    }
+  };
+
+  // Function to handle removing a procedure from the data
+  const handleRemoveProcedure = (index: any) => {
+    const updatedProcedures = [...data.procedure_details];
+    updatedProcedures.splice(index, 1);
+    setdata({ ...data, procedure_details: updatedProcedures });
+  };
 
   return (
     <Box
@@ -85,7 +109,7 @@ export default function MyProfile() {
             },
           }}
         >
-          <Breadcrumbs
+          {/* <Breadcrumbs
             size="sm"
             aria-label="breadcrumbs"
             separator={<ChevronRightRoundedIcon />}
@@ -102,7 +126,7 @@ export default function MyProfile() {
             <Typography color="primary" fontWeight={500} fontSize={12}>
               Add a case
             </Typography>
-          </Breadcrumbs>
+          </Breadcrumbs> */}
           <Typography
             level="h2"
             sx={{
@@ -151,8 +175,8 @@ export default function MyProfile() {
                 sx={{ flex: 1, minWidth: 120, borderRadius: "100%" }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                  srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+                  src={DefaultPic}
+                  // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
                   loading="lazy"
                   alt=""
                 />
@@ -180,6 +204,7 @@ export default function MyProfile() {
                 <FormLabel>Name</FormLabel>
                 <FormControl
                   sx={{
+                    width: "90%",
                     display: {
                       sm: "flex-column",
                       md: "flex-row",
@@ -206,7 +231,7 @@ export default function MyProfile() {
                   />
                 </FormControl>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
                 <FormControl>
                   <FormLabel>Phone</FormLabel>
                   <Input
@@ -234,7 +259,7 @@ export default function MyProfile() {
                   />
                 </FormControl>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
                 <FormControl>
                   <FormLabel>SSN</FormLabel>
                   <Input
@@ -251,14 +276,14 @@ export default function MyProfile() {
                   <FormLabel>Address</FormLabel>
                   <Input
                     size="sm"
-                    type="email"
+                    type="text"
                     startDecorator={<HomeIcon />}
                     placeholder="St. Address, City, State, Zip Code"
                     sx={{ flexGrow: 1 }}
                   />
                 </FormControl>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack sx={{ width: "95%" }} direction="row" spacing={2}>
                 <FormControl>
                   <FormLabel>Sex</FormLabel>
                   <Select
@@ -280,7 +305,7 @@ export default function MyProfile() {
                   <FormLabel>Facility</FormLabel>
                   <Input
                     size="sm"
-                    type="email"
+                    type="text"
                     startDecorator={<BusinessIcon />}
                     placeholder="St. Address, City, State, Zip Code"
                   />
@@ -300,10 +325,6 @@ export default function MyProfile() {
                     }}
                   />
                 </FormControl>
-                <FormControl>
-                  <FormLabel>Time</FormLabel>
-                  <Input type="time" size="sm" />
-                </FormControl>
               </Stack>
               <Stack direction="row" spacing={5}>
                 <Checkbox
@@ -320,35 +341,91 @@ export default function MyProfile() {
                   <Input
                     disabled={!Surgery}
                     size="sm"
-                    type="email"
+                    type="text"
                     startDecorator={<LocalHospitalIcon />}
                     placeholder="Dr.John Doe"
                   />
                 </FormControl>
               </Stack>
-              <div>
-                <FormControl sx={{ display: { sm: "contents" } }}>
-                  <FormLabel>Timezone</FormLabel>
-                  <Select
+
+              <Stack direction="row" spacing={4}>
+                <FormControl>
+                  <FormLabel>Procedure</FormLabel>
+                  <Input
+                    sx={{ width: "12rem" }}
+                    disabled={!Surgery}
                     size="sm"
-                    startDecorator={<AccessTimeFilledRoundedIcon />}
-                    defaultValue="1"
-                  >
-                    <Option value="1">
-                      Indochina Time (Bangkok){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                    <Option value="2">
-                      Indochina Time (Ho Chi Minh City){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                  </Select>
+                    type="text"
+                    value={procedure}
+                    onChange={(e) => setProcedure(e.target.value)}
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="Skin Plasty"
+                  />
                 </FormControl>
-              </div>
+                <FormControl>
+                  <FormLabel>CPT</FormLabel>
+                  <Input
+                    sx={{ width: "10rem" }}
+                    disabled={!Surgery}
+                    size="sm"
+                    type="text"
+                    value={cptCode}
+                    onChange={(e) => setCptCode(e.target.value)}
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="12345"
+                  />
+                </FormControl>
+                <Button
+                  sx={{
+                    height: "2rem",
+                    width: "3.5rem",
+                    position: "relative",
+                    top: "1.6rem",
+                  }}
+                  size="sm"
+                  variant="solid"
+                  onClick={handleAddProcedure}
+                >
+                  add
+                </Button>
+              </Stack>
+
+                     {/* Display added procedures with remove button */}
+       {data.procedure_details.map((item, index) => (
+          <Stack
+            key={index}
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{
+              border: "1px solid",
+              borderColor: "primary.main",
+              borderRadius: "4px",
+              padding: "8px",
+              marginTop: "8px",
+            }}
+          >
+            <Typography>{item.procedure} - {item.cptCode}</Typography>
+            <IconButton
+              size="small"
+              onClick={() => handleRemoveProcedure(index)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        ))}
+              {/* <Box
+              sx={{display:"flex",justifyContent:"end"}}
+              >
+              <Button
+              sx={{mr:"4rem"}}
+                size="sm"
+                variant="solid"
+                
+              >
+                Save
+              </Button>
+              </Box> */}
             </Stack>
           </Stack>
           <Stack
@@ -364,7 +441,7 @@ export default function MyProfile() {
                   sx={{ flex: 1, minWidth: 108, borderRadius: "100%" }}
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+                    src={DefaultPic}
                     srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
                     loading="lazy"
                     alt=""
@@ -388,10 +465,13 @@ export default function MyProfile() {
                   <EditRoundedIcon />
                 </IconButton>
               </Stack>
-              <Stack spacing={1} sx={{ flexGrow: 1 }}>
+
+              <Stack spacing={2} sx={{ flexGrow: 1 }}>
+              <Stack spacing={1}>
                 <FormLabel>Name</FormLabel>
                 <FormControl
                   sx={{
+                    width: "90%",
                     display: {
                       sm: "flex-column",
                       md: "flex-row",
@@ -399,57 +479,230 @@ export default function MyProfile() {
                     gap: 2,
                   }}
                 >
-                  <Input size="sm" placeholder="First name" />
-                  <Input size="sm" placeholder="Last name" />
+                  <Input
+                    size="sm"
+                    name="first_name"
+                    placeholder="First name"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                  />
+                  <Input
+                    size="sm"
+                    name="last_name"
+                    placeholder="Last name"
+                    sx={{ flexGrow: 1 }}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                  />
                 </FormControl>
               </Stack>
-            </Stack>
-            <FormControl>
-              <FormLabel>Role</FormLabel>
-              <Input size="sm" defaultValue="UI Developer" />
-            </FormControl>
-            <FormControl sx={{ flexGrow: 1 }}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                size="sm"
-                type="email"
-                startDecorator={<EmailRoundedIcon />}
-                placeholder="email"
-                defaultValue="siriwatk@test.com"
-                sx={{ flexGrow: 1 }}
-              />
-            </FormControl>
-            <div>
-              <CountrySelector />
-            </div>
-            <div>
-              <FormControl sx={{ display: { sm: "contents" } }}>
-                <FormLabel>Timezone</FormLabel>
-                <Select
+              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
+                <FormControl>
+                  <FormLabel>Phone</FormLabel>
+                  <Input
+                    name="phone_number"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    startDecorator={<LocalPhoneIcon />}
+                    size="sm"
+                    placeholder="+1234234234"
+                  />
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    size="sm"
+                    type="email"
+                    startDecorator={<EmailRoundedIcon />}
+                    name="email"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    placeholder="johndoe@test.com"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
+                <FormControl>
+                  <FormLabel>SSN</FormLabel>
+                  <Input
+                    name="ssn"
+                    startDecorator={<Grid3x3Icon />}
+                    size="sm"
+                    placeholder="1234234234"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                  />
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Address</FormLabel>
+                  <Input
+                    size="sm"
+                    type="text"
+                    startDecorator={<HomeIcon />}
+                    placeholder="St. Address, City, State, Zip Code"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack sx={{ width: "95%" }} direction="row" spacing={2}>
+                <FormControl>
+                  <FormLabel>Sex</FormLabel>
+                  <Select
+                    name="sex"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    placeholder="Male/Female"
+                    required
+                    size="sm"
+                    sx={{ minWidth: 200 }}
+                  >
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                    <Option value="other">Other</Option>
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Facility</FormLabel>
+                  <Input
+                    size="sm"
+                    type="text"
+                    startDecorator={<BusinessIcon />}
+                    placeholder="St. Address, City, State, Zip Code"
+                  />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={5}>
+                <FormControl size={"md"}>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <Input
+                    size="sm"
+                    type="date"
+                    slotProps={{
+                      input: {
+                        min: "2018-06-07T00:00",
+                        max: "2018-06-14T00:00",
+                      },
+                    }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={5}>
+                <Checkbox
+                  label="Surgery required"
+                  variant="outlined"
                   size="sm"
-                  startDecorator={<AccessTimeFilledRoundedIcon />}
-                  defaultValue="1"
+                  onChange={(e) => {
+                    setSurgery(e.target.checked);
+                  }}
+                  sx={{ position: "relative", top: 30 }}
+                />
+                <FormControl>
+                  <FormLabel>Surgeon Assigned</FormLabel>
+                  <Input
+                    disabled={!Surgery}
+                    size="sm"
+                    type="text"
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="Dr.John Doe"
+                  />
+                </FormControl>
+              </Stack>
+
+              <Stack direction="row" spacing={4}>
+                <FormControl>
+                  <FormLabel>Procedure</FormLabel>
+                  <Input
+                    sx={{ width: "12rem" }}
+                    disabled={!Surgery}
+                    size="sm"
+                    type="text"
+                    value={procedure}
+                    onChange={(e) => setProcedure(e.target.value)}
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="Skin Plasty"
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>CPT</FormLabel>
+                  <Input
+                    sx={{ width: "10rem" }}
+                    disabled={!Surgery}
+                    size="sm"
+                    type="text"
+                    value={cptCode}
+                    onChange={(e) => setCptCode(e.target.value)}
+                    startDecorator={<LocalHospitalIcon />}
+                    placeholder="12345"
+                  />
+                </FormControl>
+                <Button
+                  sx={{
+                    height: "2rem",
+                    width: "3.5rem",
+                    position: "relative",
+                    top: "1.6rem",
+                  }}
+                  size="sm"
+                  variant="solid"
+                  onClick={handleAddProcedure}
                 >
-                  <Option value="1">
-                    Indochina Time (Bangkok){" "}
-                    <Typography textColor="text.tertiary" ml={0.5}>
-                      — GMT+07:00
-                    </Typography>
-                  </Option>
-                  <Option value="2">
-                    Indochina Time (Ho Chi Minh City){" "}
-                    <Typography textColor="text.tertiary" ml={0.5}>
-                      — GMT+07:00
-                    </Typography>
-                  </Option>
-                </Select>
-              </FormControl>
-            </div>
+                  add
+                </Button>
+              </Stack>
+
+                     {/* Display added procedures with remove button */}
+       {data.procedure_details.map((item, index) => (
+          <Stack
+            key={index}
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{
+              border: "1px solid",
+              borderColor: "primary.main",
+              borderRadius: "4px",
+              padding: "8px",
+              marginTop: "8px",
+            }}
+          >
+            <Typography>{item.procedure} - {item.cptCode}</Typography>
+            <IconButton
+              size="small"
+              onClick={() => handleRemoveProcedure(index)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        ))}
+              {/* <Box
+              sx={{display:"flex",justifyContent:"end"}}
+              >
+              <Button
+              sx={{mr:"4rem"}}
+                size="sm"
+                variant="solid"
+                
+              >
+                Save
+              </Button>
+              </Box> */}
+            </Stack>
+              
+              
+            </Stack>
+
           </Stack>
           <Box sx={{ mb: 1, mt: 3 }}>
-            <Typography level="title-md">Procedure Description</Typography>
+            <Typography level="title-md">Initial Notes</Typography>
             <Typography level="body-sm">
-              Write description about the procedure in the field below.
+              Write description about the diagnosis in the field below.
             </Typography>
           </Box>
           <Stack spacing={2} sx={{ my: 1 }}>
@@ -458,23 +711,6 @@ export default function MyProfile() {
               minRows={4}
               sx={{ mt: 1.5 }}
               placeholder="Left 1st metatarsal- cuneiform fusion, modified McBride, Akin osteotomy, left 2nd digit hammer toe correction"
-            />
-            <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
-              275 characters left
-            </FormHelperText>
-          </Stack>
-          <Box sx={{ mb: 1, mt: 3 }}>
-            <Typography level="title-md">Insurance Details</Typography>
-            <Typography level="body-sm">
-              Write description about the procedure in the field below.
-            </Typography>
-          </Box>
-          <Stack spacing={2} sx={{ my: 1 }}>
-            <Textarea
-              size="sm"
-              minRows={4}
-              sx={{ mt: 1.5 }}
-              placeholder="Insurance company name, policy number, etc."
             />
             <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
               275 characters left
