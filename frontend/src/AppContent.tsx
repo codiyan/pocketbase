@@ -19,6 +19,8 @@ import Cases from "./views/cases/Cases";
 import AssignedAppointments from "./views/assigned/AssignedAppointments";
 import CaseView from "./views/cases/CaseView/CaseView";
 import AddCase from "./views/addCase/AddCase";
+import DetailView from "./views/cases/CaseView/DetailView";
+import CalendarScreen from "./views/calendar/CalendarScreen";
 
 export default function AppContent() {
   return (
@@ -28,7 +30,7 @@ export default function AppContent() {
         className="MainContent"
         sx={{
           marginLeft: {
-           md: "var(--Sidebar-width)"
+            md: "var(--Sidebar-width)"
           }
           ,
 
@@ -56,13 +58,15 @@ export default function AppContent() {
       >
         <Suspense fallback={<CircularProgress color="primary" />}>
           <Routes>
-            <Route key={"cases"} path={"/cases/details/:id"} element={<CaseView />} />
+            <Route key={"cases"} path={"/cases/detail/:id"} element={<DetailView />} />
+            <Route key={"cases"} path={"/cases/:id"} element={<CaseView />} />
+
             <Route key={"cases"} path={"/cases*"} element={<Cases />} />
 
             <Route
               key={"Calendar"}
               path={"/calendar"}
-              element={<Dashboard />}
+              element={<CalendarScreen />}
             />
             <Route key={"stats"} path={"/stats"} element={<Dashboard />} />
             <Route

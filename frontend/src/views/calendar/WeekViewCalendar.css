@@ -1,0 +1,18 @@
+.week-calendar {
+  margin: 20px;
+}
+
+.week-columns {
+  display: flex;
+  align-items: stretch;
+  
+}
+
+.week-columns > .column{
+
+
+}
+
+.week-columns > .column .day {
+  flex:1;
+}
