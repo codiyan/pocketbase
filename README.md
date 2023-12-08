@@ -11,3 +11,5 @@
 ```
 npx pocketbase-typegen --db ./pb_data/data.db -o frontend/src/pocketbase-types.ts
 ```
+
+nonsense conmmit
