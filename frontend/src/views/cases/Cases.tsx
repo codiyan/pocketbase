@@ -17,19 +17,19 @@ import NewPatient from "./NewPatient";
 import { Link, Route, Routes } from "react-router-dom";
 
 export default function Cases() {
-  const [patients, setPatients] = useState([{ id: "", name: "", dob: "", status: ""}]);
+  const [patients, setPatients] = useState([{ id: "", name: "", dob: "", status: "" }]);
 
   // write a function to convert 2023-11-01 12:00:00.000Z to 2023-11-01
   const convertDate = (date: string) => {
+    if (!date) return ("");
     const dateArray = date.split(" ");
     return dateArray[0];
   };
 
   const getList = async () => {
     const records = await pb.collection("cases").getFullList({
-      sort: "-created",requestKey:"null",
+      sort: "-created", requestKey: "null",
     });
-    console.log(records);
     // create an array of jsons of records using only id, name, dob, status
     const patients = records.map((record) => {
       return {
@@ -40,7 +40,7 @@ export default function Cases() {
       };
     });
     // console.log(patients);
-    
+
     setPatients(patients);
   };
 

@@ -153,8 +153,10 @@ export default function DetailView() {
                     if (caseDetailsResponse) {
                         // calculate age using util method calculateAge
                         let age = calculateAge(caseDetailsResponse.dob);
-                        caseDetailsResponse.age = age;
-                        setCaseDetailsNew(caseDetailsResponse);
+                        setCaseDetailsNew({
+                            ...caseDetailsResponse,
+                            age: age,
+                        });
                     }
                 }
             } catch (error) {

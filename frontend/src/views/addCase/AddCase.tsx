@@ -44,9 +44,15 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import DefaultPic from "../../assets/default-pic.jpg";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { ProceduresRecord } from "../../pocketbase-types";
+
+
 
 export default function MyProfile() {
-  const [data, setdata] = useState({
+  const [data, setdata] = useState<{
+    procedure_details: any[]; // TODO: Replace with ProceduresRecord[]
+    status: string;
+  }>({
     procedure_details: [],
     status: "new",
   });
@@ -390,30 +396,30 @@ export default function MyProfile() {
                 </Button>
               </Stack>
 
-                     {/* Display added procedures with remove button */}
-       {data.procedure_details.map((item, index) => (
-          <Stack
-            key={index}
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              border: "1px solid",
-              borderColor: "primary.main",
-              borderRadius: "4px",
-              padding: "8px",
-              marginTop: "8px",
-            }}
-          >
-            <Typography>{item.procedure} - {item.cptCode}</Typography>
-            <IconButton
-              size="small"
-              onClick={() => handleRemoveProcedure(index)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-        ))}
+              {/* Display added procedures with remove button */}
+              {data.procedure_details.map((item, index) => (
+                <Stack
+                  key={index}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  <Typography>{item.procedure} - {item.cptCode}</Typography>
+                  <IconButton
+                    size="sm"
+                    onClick={() => handleRemoveProcedure(index)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Stack>
+              ))}
               {/* <Box
               sx={{display:"flex",justifyContent:"end"}}
               >
@@ -467,221 +473,221 @@ export default function MyProfile() {
               </Stack>
 
               <Stack spacing={2} sx={{ flexGrow: 1 }}>
-              <Stack spacing={1}>
-                <FormLabel>Name</FormLabel>
-                <FormControl
-                  sx={{
-                    width: "90%",
-                    display: {
-                      sm: "flex-column",
-                      md: "flex-row",
-                    },
-                    gap: 2,
-                  }}
-                >
-                  <Input
-                    size="sm"
-                    name="first_name"
-                    placeholder="First name"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                  <Input
-                    size="sm"
-                    name="last_name"
-                    placeholder="Last name"
-                    sx={{ flexGrow: 1 }}
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
-                <FormControl>
-                  <FormLabel>Phone</FormLabel>
-                  <Input
-                    name="phone_number"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                    startDecorator={<LocalPhoneIcon />}
-                    size="sm"
-                    placeholder="+1234234234"
-                  />
-                </FormControl>
-                <FormControl sx={{ flexGrow: 1 }}>
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    size="sm"
-                    type="email"
-                    startDecorator={<EmailRoundedIcon />}
-                    name="email"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                    placeholder="johndoe@test.com"
-                    sx={{ flexGrow: 1 }}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
-                <FormControl>
-                  <FormLabel>SSN</FormLabel>
-                  <Input
-                    name="ssn"
-                    startDecorator={<Grid3x3Icon />}
-                    size="sm"
-                    placeholder="1234234234"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                </FormControl>
-                <FormControl sx={{ flexGrow: 1 }}>
-                  <FormLabel>Address</FormLabel>
-                  <Input
-                    size="sm"
-                    type="text"
-                    startDecorator={<HomeIcon />}
-                    placeholder="St. Address, City, State, Zip Code"
-                    sx={{ flexGrow: 1 }}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack sx={{ width: "95%" }} direction="row" spacing={2}>
-                <FormControl>
-                  <FormLabel>Sex</FormLabel>
-                  <Select
-                    name="sex"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                    placeholder="Male/Female"
-                    required
-                    size="sm"
-                    sx={{ minWidth: 200 }}
-                  >
-                    <Option value="male">Male</Option>
-                    <Option value="female">Female</Option>
-                    <Option value="other">Other</Option>
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ flexGrow: 1 }}>
-                  <FormLabel>Facility</FormLabel>
-                  <Input
-                    size="sm"
-                    type="text"
-                    startDecorator={<BusinessIcon />}
-                    placeholder="St. Address, City, State, Zip Code"
-                  />
-                </FormControl>
-              </Stack>
-              <Stack direction="row" spacing={5}>
-                <FormControl size={"md"}>
-                  <FormLabel>Date of Birth</FormLabel>
-                  <Input
-                    size="sm"
-                    type="date"
-                    slotProps={{
-                      input: {
-                        min: "2018-06-07T00:00",
-                        max: "2018-06-14T00:00",
+                <Stack spacing={1}>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl
+                    sx={{
+                      width: "90%",
+                      display: {
+                        sm: "flex-column",
+                        md: "flex-row",
                       },
+                      gap: 2,
                     }}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack direction="row" spacing={5}>
-                <Checkbox
-                  label="Surgery required"
-                  variant="outlined"
-                  size="sm"
-                  onChange={(e) => {
-                    setSurgery(e.target.checked);
-                  }}
-                  sx={{ position: "relative", top: 30 }}
-                />
-                <FormControl>
-                  <FormLabel>Surgeon Assigned</FormLabel>
-                  <Input
-                    disabled={!Surgery}
+                  >
+                    <Input
+                      size="sm"
+                      name="first_name"
+                      placeholder="First name"
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                    />
+                    <Input
+                      size="sm"
+                      name="last_name"
+                      placeholder="Last name"
+                      sx={{ flexGrow: 1 }}
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
+                  <FormControl>
+                    <FormLabel>Phone</FormLabel>
+                    <Input
+                      name="phone_number"
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                      startDecorator={<LocalPhoneIcon />}
+                      size="sm"
+                      placeholder="+1234234234"
+                    />
+                  </FormControl>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      size="sm"
+                      type="email"
+                      startDecorator={<EmailRoundedIcon />}
+                      name="email"
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                      placeholder="johndoe@test.com"
+                      sx={{ flexGrow: 1 }}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack sx={{ width: "90%" }} direction="row" spacing={2}>
+                  <FormControl>
+                    <FormLabel>SSN</FormLabel>
+                    <Input
+                      name="ssn"
+                      startDecorator={<Grid3x3Icon />}
+                      size="sm"
+                      placeholder="1234234234"
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <FormLabel>Address</FormLabel>
+                    <Input
+                      size="sm"
+                      type="text"
+                      startDecorator={<HomeIcon />}
+                      placeholder="St. Address, City, State, Zip Code"
+                      sx={{ flexGrow: 1 }}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack sx={{ width: "95%" }} direction="row" spacing={2}>
+                  <FormControl>
+                    <FormLabel>Sex</FormLabel>
+                    <Select
+                      name="sex"
+                      onChange={(e) => {
+                        handleChange(e);
+                      }}
+                      placeholder="Male/Female"
+                      required
+                      size="sm"
+                      sx={{ minWidth: 200 }}
+                    >
+                      <Option value="male">Male</Option>
+                      <Option value="female">Female</Option>
+                      <Option value="other">Other</Option>
+                    </Select>
+                  </FormControl>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <FormLabel>Facility</FormLabel>
+                    <Input
+                      size="sm"
+                      type="text"
+                      startDecorator={<BusinessIcon />}
+                      placeholder="St. Address, City, State, Zip Code"
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack direction="row" spacing={5}>
+                  <FormControl size={"md"}>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <Input
+                      size="sm"
+                      type="date"
+                      slotProps={{
+                        input: {
+                          min: "2018-06-07T00:00",
+                          max: "2018-06-14T00:00",
+                        },
+                      }}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack direction="row" spacing={5}>
+                  <Checkbox
+                    label="Surgery required"
+                    variant="outlined"
                     size="sm"
-                    type="text"
-                    startDecorator={<LocalHospitalIcon />}
-                    placeholder="Dr.John Doe"
+                    onChange={(e) => {
+                      setSurgery(e.target.checked);
+                    }}
+                    sx={{ position: "relative", top: 30 }}
                   />
-                </FormControl>
-              </Stack>
+                  <FormControl>
+                    <FormLabel>Surgeon Assigned</FormLabel>
+                    <Input
+                      disabled={!Surgery}
+                      size="sm"
+                      type="text"
+                      startDecorator={<LocalHospitalIcon />}
+                      placeholder="Dr.John Doe"
+                    />
+                  </FormControl>
+                </Stack>
 
-              <Stack direction="row" spacing={4}>
-                <FormControl>
-                  <FormLabel>Procedure</FormLabel>
-                  <Input
-                    sx={{ width: "12rem" }}
-                    disabled={!Surgery}
+                <Stack direction="row" spacing={4}>
+                  <FormControl>
+                    <FormLabel>Procedure</FormLabel>
+                    <Input
+                      sx={{ width: "12rem" }}
+                      disabled={!Surgery}
+                      size="sm"
+                      type="text"
+                      value={procedure}
+                      onChange={(e) => setProcedure(e.target.value)}
+                      startDecorator={<LocalHospitalIcon />}
+                      placeholder="Skin Plasty"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>CPT</FormLabel>
+                    <Input
+                      sx={{ width: "10rem" }}
+                      disabled={!Surgery}
+                      size="sm"
+                      type="text"
+                      value={cptCode}
+                      onChange={(e) => setCptCode(e.target.value)}
+                      startDecorator={<LocalHospitalIcon />}
+                      placeholder="12345"
+                    />
+                  </FormControl>
+                  <Button
+                    sx={{
+                      height: "2rem",
+                      width: "3.5rem",
+                      position: "relative",
+                      top: "1.6rem",
+                    }}
                     size="sm"
-                    type="text"
-                    value={procedure}
-                    onChange={(e) => setProcedure(e.target.value)}
-                    startDecorator={<LocalHospitalIcon />}
-                    placeholder="Skin Plasty"
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>CPT</FormLabel>
-                  <Input
-                    sx={{ width: "10rem" }}
-                    disabled={!Surgery}
-                    size="sm"
-                    type="text"
-                    value={cptCode}
-                    onChange={(e) => setCptCode(e.target.value)}
-                    startDecorator={<LocalHospitalIcon />}
-                    placeholder="12345"
-                  />
-                </FormControl>
-                <Button
-                  sx={{
-                    height: "2rem",
-                    width: "3.5rem",
-                    position: "relative",
-                    top: "1.6rem",
-                  }}
-                  size="sm"
-                  variant="solid"
-                  onClick={handleAddProcedure}
-                >
-                  add
-                </Button>
-              </Stack>
+                    variant="solid"
+                    onClick={handleAddProcedure}
+                  >
+                    add
+                  </Button>
+                </Stack>
 
-                     {/* Display added procedures with remove button */}
-       {data.procedure_details.map((item, index) => (
-          <Stack
-            key={index}
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              border: "1px solid",
-              borderColor: "primary.main",
-              borderRadius: "4px",
-              padding: "8px",
-              marginTop: "8px",
-            }}
-          >
-            <Typography>{item.procedure} - {item.cptCode}</Typography>
-            <IconButton
-              size="small"
-              onClick={() => handleRemoveProcedure(index)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-        ))}
-              {/* <Box
+                {/* Display added procedures with remove button */}
+                {data.procedure_details.map((item, index) => (
+                  <Stack
+                    key={index}
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "primary.main",
+                      borderRadius: "4px",
+                      padding: "8px",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <Typography>{item.procedure} - {item.cptCode}</Typography>
+                    <IconButton
+                      size="sm"
+                      onClick={() => handleRemoveProcedure(index)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Stack>
+                ))}
+                {/* <Box
               sx={{display:"flex",justifyContent:"end"}}
               >
               <Button
@@ -693,9 +699,9 @@ export default function MyProfile() {
                 Save
               </Button>
               </Box> */}
-            </Stack>
-              
-              
+              </Stack>
+
+
             </Stack>
 
           </Stack>

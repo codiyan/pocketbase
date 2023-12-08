@@ -56,6 +56,12 @@ const HourCell = styled.div`
   padding: 10px;
   text-align: center;
   flex:1;
+  
+  :hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+
 `;
 
 const Event = styled.div`
@@ -65,6 +71,13 @@ const Event = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const LunchEvent = styled(Event)`
@@ -77,13 +90,17 @@ export type WeekViewEventType = {
     endTime: string;
     type: 'surgery' | 'block';
     id: string;
+    case: any;
 }
-type Props = { events: WeekViewEventType[], range: { start: string, end: string } };
+type Props = {
+    events: WeekViewEventType[], range: { start: string, end: string }, onSelectRange: (start: Date, end: Date) => void,
+    onEventClick: (event: WeekViewEventType) => void
+};
 
 const WeekView = ({ events, range = {
     start: startOfWeek(new Date()).toDateString(),
     end: startOfWeek(new Date()).toDateString(),
-} }: Props) => {
+}, onSelectRange, onEventClick }: Props) => {
     const hoursOfDay = Array.from({ length: 24 }, (_, i) => i);
 
     const getEventsForDate = (date: string) => {
@@ -104,6 +121,13 @@ const WeekView = ({ events, range = {
         }
         );
     }, [range])
+
+
+    const handleHourClick = (date: string, hour: number) => {
+        const dateObj = new Date(date);
+        dateObj.setHours(hour);
+        onSelectRange(dateObj, new Date(dateObj.getTime() + 60 * 60 * 1000));
+    }
 
     return (
         <Scroller>
@@ -128,7 +152,9 @@ const WeekView = ({ events, range = {
                                 })
                             }</DayCell>
                             {hoursOfDay.map((hour) => (
-                                <HourCell key={`${index}-${hour}`} style={{ height: CELL_HEIGHT }} />
+                                <HourCell key={`${index}-${hour}`} style={{ height: CELL_HEIGHT }} onClick={e => {
+                                    handleHourClick(date, hour);
+                                }} />
                             ))}
                             {dayEvents
                                 .map((event, eventIndex) => {
@@ -152,8 +178,11 @@ const WeekView = ({ events, range = {
                                                 height: `${heightPercent}%`,
 
                                                 transform: `translateY(${CELL_HEIGHT}px)`,
-                                                backgroundColor: event.type === 'surgery' ? '#4caf50' : '#2196f3',
+                                                backgroundColor: event.type === 'surgery' ? '#4caf50' : '#a44336',
                                                 color: '#fff',
+                                            }}
+                                            onClick={() => {
+                                                onEventClick(event)
                                             }}
                                         >
                                             <div>{event.title}</div>
