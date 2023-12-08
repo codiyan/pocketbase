@@ -27,7 +27,7 @@ export default function AssignedAppointments() {
 
     // find schedule items for this user
     pb.collection('schedule_items').getList(1, 50, {
-      filter: `user.id = "${pb.authStore.model?.id}"`,
+      filter: `user.id = "${pb.authStore.model?.id}" && type = "surgery"`,
       expand: `case,procedures`
     })
       .then((items) => {

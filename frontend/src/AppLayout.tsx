@@ -20,6 +20,7 @@ import { pb } from "./services/pocketbase";
 import { Navigate } from "react-router-dom";
 
 export default function AppLayout() {
+
   if (pb.authStore.isValid == false) {
     return <Navigate replace to="/login" />;
   }

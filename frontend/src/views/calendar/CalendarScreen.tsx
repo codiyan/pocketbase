@@ -80,13 +80,13 @@ export default function CalendarScreen() {
 
     return <div>
 
-        <Stack direction='row' gap={1} justifyContent="space-between" >
+        <Stack direction='row' gap={1} justifyContent="space-between" mb={2}>
             <Typography level="h2">Assigned To You</Typography>
             <Button
                 color="primary"
                 startDecorator={<Close />}
                 size="sm"
-
+                onClick={() => handleBlockTime()}
             >
                 Block Time
             </Button>
