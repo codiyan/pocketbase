@@ -43,7 +43,7 @@ import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import ArticleIcon from '@mui/icons-material/Article';
-import DefaultPic from "../../../assets/default-pic.jpg";
+import DefaultPic from '../../../assets/default-pic.jpg'
 import { useState } from "react";
 
 interface CaseData {
@@ -178,12 +178,12 @@ export default function Caseview() {
         }}
       >
         <Card>
-          <Box sx={{ mb: 1,display:"flex", justifyContent:"space-between" }}>
+          <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
             <Box>
-            <Typography level="title-md">Case Information</Typography>
-            <Typography level="body-sm">
-              Enter details about the case in the fields below.
-            </Typography>
+              <Typography level="title-md">Case Information</Typography>
+              <Typography level="body-sm">
+                Enter details about the case in the fields below.
+              </Typography>
             </Box>
             <Button
               size="sm"
@@ -209,32 +209,32 @@ export default function Caseview() {
                 sx={{ flex: 1, minWidth: 120, borderRadius: "100%" }}
               >
                 <img
-                //if data.avatar is null, use default pic
+                  //if data.avatar is null, use default pic
                   src={DefaultPic}
                   // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
                   // loading="lazy"
                   alt=""
                 />
               </AspectRatio>
-              {editMode ?
-              <IconButton
-                aria-label="upload new picture"
-                size="sm"
-                variant="outlined"
-                color="neutral"
-                sx={{
-                  bgcolor: "background.body",
-                  position: "absolute",
-                  zIndex: 2,
-                  borderRadius: "50%",
-                  left: 100,
-                  top: 170,
-                  boxShadow: "sm",
-                }}
-              >
-                <EditRoundedIcon />
-              </IconButton>
-              :<></>}
+              {/* {editMode ?
+                <IconButton
+                  aria-label="upload new picture"
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  sx={{
+                    bgcolor: "background.body",
+                    position: "absolute",
+                    zIndex: 2,
+                    borderRadius: "50%",
+                    left: 100,
+                    top: 170,
+                    boxShadow: "sm",
+                  }}
+                >
+                  <EditRoundedIcon />
+                </IconButton>
+                : <></>} */}
             </Stack>
             <Stack spacing={2} sx={{ flexGrow: 1 }}>
               <Stack spacing={1}>
@@ -367,22 +367,29 @@ export default function Caseview() {
                   <Input
                     size="sm"
                     type="date"
+                    // value is coming like this "2023-11-07 00:00:00.000Z" how to show it
+
+
                     disabled={!editMode}
-                    value={data.dob}
+                    value={data.dob instanceof Date ? data.dob.toISOString().split("T")[0] : ""}
+                    name="dob"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     slotProps={{
                       input: {
-                        min: "2018-06-07T00:00",
-                        max: "2018-06-14T00:00",
+                        max: new Date().toISOString().split("T")[0],
                       },
+
                     }}
                   />
                 </FormControl>
-                <FormControl>
+                {/* <FormControl>
                   <FormLabel>Time</FormLabel>
                   <Input disabled={!editMode} type="time" size="sm" />
-                </FormControl>
+                </FormControl> */}
               </Stack>
-              <Stack direction="row" spacing={5}>
+              {/* <Stack direction="row" spacing={5}>
                 <Checkbox
                   label="Surgery required"
                   disabled={!editMode}
@@ -390,7 +397,7 @@ export default function Caseview() {
                   size="sm"
                   onChange={(e) => {
                     setSurgery(e.target.checked);
-                    }}
+                  }}
                   sx={{ position: "relative", top: 30 }}
                 />
                 <FormControl>
@@ -404,31 +411,8 @@ export default function Caseview() {
                     placeholder="Dr.John Doe"
                   />
                 </FormControl>
-              </Stack>
-              <div>
-                <FormControl sx={{ display: { sm: "contents" } }}>
-                  <FormLabel>Timezone</FormLabel>
-                  <Select
-                    disabled={!editMode}
-                    size="sm"
-                    startDecorator={<AccessTimeFilledRoundedIcon />}
-                    defaultValue="1"
-                  >
-                    <Option value="1">
-                      Indochina Time (Bangkok){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                    <Option value="2">
-                      Indochina Time (Ho Chi Minh City){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                  </Select>
-                </FormControl>
-              </div>
+              </Stack> */}
+
             </Stack>
           </Stack>
           <Stack

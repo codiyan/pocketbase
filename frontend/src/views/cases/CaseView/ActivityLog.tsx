@@ -17,6 +17,7 @@ import Typography from '@mui/joy/Typography';
 import SurgeryDetails from './SurgeryDetails';
 import HistoryToggleOffIcon from '@mui/icons-material/HistoryToggleOff';
 import { formatDate } from '../../../lib/utils';
+import { ca } from 'date-fns/locale';
 
 interface CaseActivityItem {
     type: string;
@@ -37,7 +38,14 @@ interface ActivityLogProps {
 const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }) => {
 
 
+    //  METHOD TO GET FIRST LINE OF NOTE
+    const getFirstLine = (note: string) => {
+        // first 5 words
+        const firstLine = note.split(' ').slice(0, 5).join(' ');
 
+        return firstLine;
+
+    }
 
     return (
         <>
@@ -58,7 +66,8 @@ const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }
                                 }
 
                                 {activityItem.type === 'note'
-                                    && 'Your custom text or description for other types'}
+                                    && getFirstLine(activityItem?.meta?.note) + '...'
+                                }
                             </Typography>
                         </ListItemContent>
                         <Typography level="body-sm">

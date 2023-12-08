@@ -63,12 +63,12 @@ function ColorSchemeToggle({ onClick, ...props }: IconButtonProps) {
 
 export default function Login() {
 
-  const {login,loading} = useLogin();
+  const { login, loading } = useLogin();
 
-  if (pb.authStore.isValid==true){
+  if (pb.authStore.isValid == true) {
     return <Navigate replace to="/" />
   }
-  
+
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
@@ -158,26 +158,26 @@ export default function Login() {
           >
             <Stack gap={4} sx={{ mb: 2 }}>
               <Stack gap={1}>
-                
+
                 <Typography level="h3">Sign in</Typography>
-                <Typography level="body-sm">
+                {/* <Typography level="body-sm">
                   New to company?{" "}
-                  <Link href="#replace-with-a-link" level="title-sm">
+                  <Link level="title-sm">
                     Sign up!
                   </Link>
-                </Typography>
+                </Typography> */}
               </Stack>
 
-              <Button
+              {/* <Button
                 variant="soft"
                 color="neutral"
                 fullWidth
                 startDecorator={<Google />}
               >
                 Continue with Google
-              </Button>
+              </Button> */}
             </Stack>
-            <Divider
+            {/* <Divider
               sx={(theme) => ({
                 [theme.getColorSchemeSelector("light")]: {
                   color: { xs: "#FFF", md: "text.tertiary" },
@@ -189,7 +189,7 @@ export default function Login() {
               })}
             >
               or
-            </Divider>
+            </Divider> */}
             <Stack gap={4} sx={{ mt: 2 }}>
               <form
                 onSubmit={(event: React.FormEvent<SignInFormElement>) => {
@@ -233,7 +233,7 @@ export default function Login() {
           </Box>
           <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" textAlign="center">
-              © Your company {new Date().getFullYear()}
+              © SurgeryX {new Date().getFullYear()}
             </Typography>
           </Box>
         </Box>

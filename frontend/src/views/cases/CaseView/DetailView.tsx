@@ -63,11 +63,14 @@ import SpatialTrackingRoundedIcon from '@mui/icons-material/SpatialTrackingRound
 import SettingsVoiceRoundedIcon from '@mui/icons-material/SettingsVoiceRounded';
 import ActivityLogComponent from './ActivityLog';
 import AddActivity from './AddActivty';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { pb } from '../../../services/pocketbase';
 import { calculateAge } from '../../../lib/utils';
 import { ca } from 'date-fns/locale';
+import DefaultPic from '../../../assets/default-pic.jpg';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 export default function DetailView() {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
     const [caseDetails, setCaseDetails] = useState({
@@ -181,6 +184,9 @@ export default function DetailView() {
 
 
     const handleOpen = () => setOpen(true);
+    const navigateToCases = () => {
+        navigate('/cases/' + id, { replace: true });
+    }
 
     return <Stack>
         <Box
@@ -210,12 +216,13 @@ export default function DetailView() {
                                     <AspectRatio
                                         ratio="1"
                                         maxHeight={200}
-                                        sx={{ flex: 1, minWidth: 120, borderRadius: '100%' }}
+                                        sx={{ flex: 1, minWidth: 120, borderRadius: "100%" }}
                                     >
                                         <img
-                                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                                            srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-                                            loading="lazy"
+                                            //if data.avatar is null, use default pic
+                                            src={DefaultPic}
+                                            // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+                                            // loading="lazy"
                                             alt=""
                                         />
                                     </AspectRatio>
@@ -304,6 +311,11 @@ export default function DetailView() {
 
                                 <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={handleOpen}>
                                     <DataSaverOnIcon />
+                                </IconButton >
+
+                                <IconButton title='Patient Profile' variant="soft" color="primary" size="sm" onClick={navigateToCases}>
+                                    <ManageAccountsIcon />
+
                                 </IconButton >
 
                             </Stack>

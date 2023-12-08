@@ -58,10 +58,10 @@ export default function AppContent() {
       >
         <Suspense fallback={<CircularProgress color="primary" />}>
           <Routes>
-            <Route key={"cases"} path={"/cases/detail/:id"} element={<DetailView />} />
+            <Route key={"cases"} path={"/cases/details/:id"} element={<DetailView />} />
             <Route key={"cases"} path={"/cases/:id"} element={<CaseView />} />
 
-            <Route key={"cases"} path={"/cases*"} element={<Cases />} />
+            {/* <Route key={"cases"} path={"/cases*"} element={<Cases />} /> */}
             <Route key={"cases"} path={"/cases/*"} element={<Cases />} />
 
             <Route

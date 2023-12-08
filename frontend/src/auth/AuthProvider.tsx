@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: any) => {
     }, [user])
 
     return (
-        <AuthContext.Provider value={contextValue} key={`force-remount-${user.id}`}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     )

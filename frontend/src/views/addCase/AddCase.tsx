@@ -41,14 +41,18 @@ import { pb } from "../../services/pocketbase";
 import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import DefaultPic from "../../assets/default-pic.jpg";
+// fix this issue
+import DefaultPic from '../../assets/default-pic.jpg';
+
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { ProceduresRecord } from "../../pocketbase-types";
+import { useNavigate } from "react-router-dom";
 
 
 
 export default function MyProfile() {
+  const navigate = useNavigate();
   const [data, setdata] = useState<{
     procedure_details: any[]; // TODO: Replace with ProceduresRecord[]
     status: string;
@@ -58,15 +62,34 @@ export default function MyProfile() {
   });
   //Write on change function
   const handleChange = (e: any) => {
-    setdata({ ...data, [e.target.name]: e.target.value });
+    console.log(e)
+    // if date of birth make it a date string for database
+    if (e.target.name === "dob") {
+      const date = new Date(e.target.value);
+
+      setdata({ ...data, [e.target.name]: date });
+      // console.log(date, d)
+    }
+    else
+
+      setdata({ ...data, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(data);
+    try {
+      const record = await pb.collection("cases").create(data);
+      // naviaget to cases
+      navigate("/cases");
 
-    const record = await pb.collection("cases").create(data);
-  };
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+
   const [Surgery, setSurgery] = useState(false);
 
   const [procedure, setProcedure] = useState("");
@@ -187,7 +210,7 @@ export default function MyProfile() {
                   alt=""
                 />
               </AspectRatio>
-              <IconButton
+              {/* <IconButton
                 aria-label="upload new picture"
                 size="sm"
                 variant="outlined"
@@ -203,7 +226,7 @@ export default function MyProfile() {
                 }}
               >
                 <EditRoundedIcon />
-              </IconButton>
+              </IconButton> */}
             </Stack>
             <Stack spacing={2} sx={{ flexGrow: 1 }}>
               <Stack spacing={1}>
@@ -323,6 +346,10 @@ export default function MyProfile() {
                   <Input
                     size="sm"
                     type="date"
+                    name="dob"
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                     slotProps={{
                       input: {
                         min: "2018-06-07T00:00",
@@ -332,7 +359,7 @@ export default function MyProfile() {
                   />
                 </FormControl>
               </Stack>
-              <Stack direction="row" spacing={5}>
+              {/* <Stack direction="row" spacing={5}>
                 <Checkbox
                   label="Surgery required"
                   variant="outlined"
@@ -396,8 +423,8 @@ export default function MyProfile() {
                 </Button>
               </Stack>
 
-              {/* Display added procedures with remove button */}
-              {data.procedure_details.map((item, index) => (
+              
+              {data.procedure_details.map((item: any, index: number) => (
                 <Stack
                   key={index}
                   direction="row"
@@ -411,6 +438,7 @@ export default function MyProfile() {
                     marginTop: "8px",
                   }}
                 >
+
                   <Typography>{item.procedure} - {item.cptCode}</Typography>
                   <IconButton
                     size="sm"
@@ -419,21 +447,11 @@ export default function MyProfile() {
                     <CloseIcon />
                   </IconButton>
                 </Stack>
-              ))}
-              {/* <Box
-              sx={{display:"flex",justifyContent:"end"}}
-              >
-              <Button
-              sx={{mr:"4rem"}}
-                size="sm"
-                variant="solid"
-                
-              >
-                Save
-              </Button>
-              </Box> */}
-            </Stack>
-          </Stack>
+              ))
+              } */}
+
+            </Stack >
+          </Stack >
           <Stack
             direction="column"
             spacing={2}
@@ -664,7 +682,7 @@ export default function MyProfile() {
                 </Stack>
 
                 {/* Display added procedures with remove button */}
-                {data.procedure_details.map((item, index) => (
+                {data.procedure_details.map((item: any, index: number) => (
                   <Stack
                     key={index}
                     direction="row"
@@ -678,15 +696,16 @@ export default function MyProfile() {
                       marginTop: "8px",
                     }}
                   >
-                    <Typography>{item.procedure} - {item.cptCode}</Typography>
+                    {/* <Typography>{item.procedure} - {item.cptCode}</Typography> */}
                     <IconButton
                       size="sm"
                       onClick={() => handleRemoveProcedure(index)}
                     >
                       <CloseIcon />
                     </IconButton>
-                  </Stack>
-                ))}
+                  </Stack >
+                ))
+                }
                 {/* <Box
               sx={{display:"flex",justifyContent:"end"}}
               >
@@ -699,12 +718,12 @@ export default function MyProfile() {
                 Save
               </Button>
               </Box> */}
-              </Stack>
+              </Stack >
 
 
-            </Stack>
+            </Stack >
 
-          </Stack>
+          </Stack >
           <Box sx={{ mb: 1, mt: 3 }}>
             <Typography level="title-md">Initial Notes</Typography>
             <Typography level="body-sm">
@@ -716,6 +735,11 @@ export default function MyProfile() {
               size="sm"
               minRows={4}
               sx={{ mt: 1.5 }}
+
+              name="initial_note"
+              onChange={(e) => {
+                handleChange(e);
+              }}
               placeholder="Left 1st metatarsal- cuneiform fusion, modified McBride, Akin osteotomy, left 2nd digit hammer toe correction"
             />
             <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
@@ -724,9 +748,9 @@ export default function MyProfile() {
           </Stack>
           <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
             <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
+              {/* <Button size="sm" variant="outlined" color="neutral">
                 Cancel
-              </Button>
+              </Button> */}
               <Button
                 size="sm"
                 variant="solid"
@@ -738,8 +762,8 @@ export default function MyProfile() {
               </Button>
             </CardActions>
           </CardOverflow>
-        </Card>
-      </Stack>
-    </Box>
+        </Card >
+      </Stack >
+    </Box >
   );
 }
