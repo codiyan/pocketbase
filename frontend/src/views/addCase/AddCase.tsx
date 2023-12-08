@@ -41,13 +41,19 @@ import { pb } from "../../services/pocketbase";
 import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import DefaultPic from "../../assets/default-pic.jpg";
+import DefaultPic from "../../assets/default.jpg";
 import { toast } from "react-toastify";
 import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate } from 'react-router-dom';
+
 import { useState } from "react";
 
 export default function MyProfile() {
-  const [data, setdata] = useState({
+  const navigate = useNavigate();
+  const navigateToCase = (id: string) => {
+    navigate(`/cases/detail/${id}`);
+  }
+  const [data, setdata] = useState<{ procedure_details: Array<any>, status: string }>({
     procedure_details: [],
     status: "new",
   });
@@ -59,19 +65,8 @@ export default function MyProfile() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(data);
-
-    try {
-      const record = await pb.collection("cases").create(data);
-      toast.success("Case saved successfully", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
-    } catch (error) {
-      // Handle error, if any
-      console.error("Error saving the case:", error);
-      toast.error("Failed to save the case", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
-    }
+    const record = await pb.collection("cases").create(data);
+    navigateToCase(record.id);
   };
   const [Surgery, setSurgery] = useState(false);
 
@@ -474,7 +469,7 @@ export default function MyProfile() {
               </div>
 
               {/* Display added procedures with remove button */}
-              {data.procedure_details.map((item, index) => (
+              {data.procedure_details.map((item:any, index:any) => (
                 <Stack
                   key={index}
                   direction="row"
@@ -499,7 +494,7 @@ export default function MyProfile() {
                     {item.speciality}
                   </Typography>
                   <IconButton
-                    size="small"
+                    size="sm"
                     onClick={() => handleRemoveProcedure(index)}
                   >
                     <CloseIcon />
@@ -797,7 +792,7 @@ export default function MyProfile() {
                 </div>
 
                 {/* Display added procedures with remove button */}
-                {data.procedure_details.map((item, index) => (
+                {data.procedure_details.map((item:any, index:any) => (
                   <Stack
                     key={index}
                     direction="row"
@@ -824,7 +819,7 @@ export default function MyProfile() {
                       {item.speciality}
                     </Typography>
                     <IconButton
-                      size="small"
+                      size="sm"
                       onClick={() => handleRemoveProcedure(index)}
                     >
                       <CloseIcon />

@@ -43,8 +43,10 @@ import Checkbox from "@mui/joy/Checkbox";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import ArticleIcon from '@mui/icons-material/Article';
-import DefaultPic from "../../../assets/default-pic.jpg";
+import DefaultPic from "../../../assets/default.jpg";
 import { useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+
 
 interface CaseData {
   first_name: string;
@@ -58,6 +60,50 @@ export default function Caseview() {
   const [data, setData] = React.useState<any>({});
   const [editMode, setEditMode] = React.useState(false);
   const [Surgery, setSurgery] = useState(false);
+  const [procedure, setProcedure] = useState("");
+  const [cptCode, setCptCode] = useState("");
+  const [duration, setDuration] = useState("");
+  const [anesthesiaType, setAnesthesiaType] = useState("");
+  const [anesthesiaPosition, setAnesthesiaPosition] = useState("");
+  const [speciality, setSpeciality] = useState("");
+
+
+  const handleAddProcedure = () => {
+    if (
+      procedure &&
+      cptCode &&
+      duration &&
+      anesthesiaType &&
+      anesthesiaPosition &&
+      speciality
+    ) {
+      const updatedProcedures = [
+        ...data.procedure_details,
+        {
+          procedure,
+          cptCode,
+          duration,
+          anesthesiaType,
+          anesthesiaPosition,
+          speciality,
+        },
+      ];
+      setData({ ...data, procedure_details: updatedProcedures });
+      setProcedure("");
+      setCptCode("");
+      setDuration("");
+      setAnesthesiaType("");
+      setAnesthesiaPosition("");
+      setSpeciality("");
+    }
+  };
+
+  // Function to handle removing a procedure from the data
+  const handleRemoveProcedure = (index: any) => {
+    const updatedProcedures = [...data.procedure_details];
+    updatedProcedures.splice(index, 1);
+    setData({ ...data, procedure_details: updatedProcedures });
+  };
 
   React.useEffect(() => {
     const fetchCaseData = async (caseId: any) => {
@@ -405,30 +451,136 @@ export default function Caseview() {
                   />
                 </FormControl>
               </Stack>
-              <div>
-                <FormControl sx={{ display: { sm: "contents" } }}>
-                  <FormLabel>Timezone</FormLabel>
-                  <Select
-                    disabled={!editMode}
+              <Stack direction="row" spacing={4}>
+                  <FormControl>
+                    <FormLabel>Procedure</FormLabel>
+                    <Input
+                      sx={{ width: "13.5rem" }}
+                      disabled={!Surgery || !editMode}
+                      size="sm"
+                      type="text"
+                      value={procedure}
+                      onChange={(e) => setProcedure(e.target.value)}
+                      startDecorator={<LocalHospitalIcon />}
+                      placeholder="Skin Plasty"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>CPT</FormLabel>
+                    <Input
+                      sx={{ width: "13.5rem" }}
+                      disabled={!Surgery || !editMode}
+                      size="sm"
+                      type="text"
+                      value={cptCode}
+                      onChange={(e) => setCptCode(e.target.value)}
+                      startDecorator={<LocalHospitalIcon />}
+                      placeholder="12345"
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack direction="row" spacing={4}>
+                  <FormControl>
+                    <FormLabel>Duration</FormLabel>
+                    <Input
+                      size="sm"
+                      disabled = {!Surgery || !editMode}
+                      type="text"
+                      value={duration}
+                      onChange={(e) => setDuration(e.target.value)}
+                      placeholder="Duration"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Anesthesia Type</FormLabel>
+                    <Input
+                      size="sm"
+                      type="text"
+                      disabled = {!Surgery || !editMode}
+                      value={anesthesiaType}
+                      onChange={(e) => setAnesthesiaType(e.target.value)}
+                      placeholder="Anesthesia Type"
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack direction="row" spacing={4}>
+                  <FormControl>
+                    <FormLabel>Anesthesia Position</FormLabel>
+                    <Input
+                      size="sm"
+                      type="text"
+                      disabled = {!Surgery || !editMode}
+                      value={anesthesiaPosition}
+                      onChange={(e) => setAnesthesiaPosition(e.target.value)}
+                      placeholder="Anesthesia Position"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Speciality</FormLabel>
+                    <Input
+                      size="sm"
+                      type="text"
+                      disabled = {!Surgery || !editMode}
+                      value={speciality}
+                      onChange={(e) => setSpeciality(e.target.value)}
+                      placeholder="Speciality"
+                    />
+                  </FormControl>
+                </Stack>
+                {editMode ? (
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    sx={{
+                      height: "2rem",
+                      width: "3.5rem",
+                      // position: "relative",
+                      // top: "1.6rem",
+                      // right:"3rem"
+                    }}
                     size="sm"
-                    startDecorator={<AccessTimeFilledRoundedIcon />}
-                    defaultValue="1"
+                    variant="solid"
+                    onClick={handleAddProcedure}
                   >
-                    <Option value="1">
-                      Indochina Time (Bangkok){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                    <Option value="2">
-                      Indochina Time (Ho Chi Minh City){" "}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        — GMT+07:00
-                      </Typography>
-                    </Option>
-                  </Select>
-                </FormControl>
-              </div>
+                    Add
+                  </Button>
+                </div>):
+                <></>}
+              {data.procedure_details &&  data.procedure_details.length > 0 && (
+              data.procedure_details.map((item:any, index:any) => (
+                <Stack
+                  key={index}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    Procedure:{item.procedure} - CPT:{item.cptCode} - Duration:
+                    {item.duration} - Anesthesia Type: {item.anesthesiaType} -
+                    Anesthesia Position: {item.anesthesiaPosition} - Specialty:
+                    {item.speciality}
+                  </Typography>
+                  {editMode ? (
+
+                  <IconButton
+                    size="sm"
+                    onClick={() => handleRemoveProcedure(index)}
+                  >
+                    <CloseIcon />
+                  </IconButton>):<></>}
+                </Stack>)
+              ))}
+            
             </Stack>
           </Stack>
           <Stack
@@ -527,36 +679,23 @@ export default function Caseview() {
             </div>
           </Stack>
           <Box sx={{ mb: 1, mt: 3 }}>
-            <Typography level="title-md">Procedure Description</Typography>
+            <Typography level="title-md">Initial Notes</Typography>
             <Typography level="body-sm">
-              Write description about the procedure in the field below.
+              Write description about the diagnosis in the field below.
             </Typography>
           </Box>
           <Stack spacing={2} sx={{ my: 1 }}>
             <Textarea
-              disabled={!editMode}
+              name="intial_notes"
               size="sm"
               minRows={4}
               sx={{ mt: 1.5 }}
+              value={data.intial_notes}
+              disabled={!editMode}
               placeholder="Left 1st metatarsal- cuneiform fusion, modified McBride, Akin osteotomy, left 2nd digit hammer toe correction"
-            />
-            <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
-              275 characters left
-            </FormHelperText>
-          </Stack>
-          <Box sx={{ mb: 1, mt: 3 }}>
-            <Typography level="title-md">Insurance Details</Typography>
-            <Typography level="body-sm">
-              Write description about the procedure in the field below.
-            </Typography>
-          </Box>
-          <Stack spacing={2} sx={{ my: 1 }}>
-            <Textarea
-              disabled={!editMode}
-              size="sm"
-              minRows={4}
-              sx={{ mt: 1.5 }}
-              placeholder="Insurance company name, policy number, etc."
+              onChange={(e) => {
+                handleChange(e);
+              }}
             />
             <FormHelperText sx={{ mt: 0.75, fontSize: "xs" }}>
               275 characters left

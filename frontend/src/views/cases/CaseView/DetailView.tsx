@@ -65,10 +65,23 @@ import AddActivity from './AddActivty';
 import { useParams } from 'react-router-dom';
 import { pb } from '../../../services/pocketbase';
 import { calculateAge } from '../../../lib/utils';
+import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from 'react-router-dom';
+
 import { ca } from 'date-fns/locale';
+import { set } from 'date-fns';
 export default function DetailView() {
+  const navigate = useNavigate();
+
+
+    
     const { id } = useParams();
+    const navigateToCase = (id: string) => {
+        navigate(`/cases/${id}`);
+      }
     const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
+    const [procedures, setProcedures] = useState([]) as any[];
+    const [surgeryDetails, setSurgeryDetails] = useState([] as any);
     const [caseDetails, setCaseDetails] = useState({
         first_name: 'John',
         last_name: 'Doe',
@@ -114,33 +127,9 @@ export default function DetailView() {
                 created: '2023-12-03T09:00:00-04:00'
             }
         ],
-        surgery_scheduled: [
-            {
-
-                start: "2021-10-01T09:00:00-04:00",
-                end: "2021-10-01T09:30:00-04:00",
-                type: 'surgery',
-                duration: 30,
-                anesthesia_type: 'choice',
-                anesthesia_position: 'surpine',
-                specialty: 'podiatry',
-                procedures: [
-                    {
-                        name: "Right Akin",
-                        site: 'foot',
-                        laterality: 'right',
-                        cpt_code: '28285',
-                    },
-                    {
-                        name: 'Weil osteotomy',
-                        site: 'foot',
-                        laterality: 'right',
-                        cpt_code: '28285',
-                    }
-                ],
-            }
-        ]
     });
+
+
 
 
     // make async await
@@ -153,6 +142,7 @@ export default function DetailView() {
                     if (caseDetailsResponse) {
                         // calculate age using util method calculateAge
                         let age = calculateAge(caseDetailsResponse.dob);
+                        setProcedures(caseDetailsResponse.procedure_details);
                         caseDetailsResponse.age = age;
                         setCaseDetailsNew(caseDetailsResponse);
                     }
@@ -164,6 +154,34 @@ export default function DetailView() {
 
         fetchData();
     }, [id]);
+
+
+    useEffect(() => {
+        const transformedArray = procedures.map((item: { duration: any; anesthesiaType: any; anesthesiaPosition: any; speciality: any; procedure: any; cptCode: any; }) => {
+            return {
+              surgeryDetails: {
+                duration: Number(item.duration),
+                anesthesia_type: item.anesthesiaType,
+                anesthesia_position: item.anesthesiaPosition,
+                specialty: item.speciality,
+                procedures: [
+                  {
+                    name: item.procedure,
+                    cpt_code: item.cptCode
+                  }
+                ]
+              }
+            };
+          });
+        
+        setSurgeryDetails(transformedArray);
+    },[procedures])
+
+    
+    useEffect(() => {
+        console.log("surgeryDetails", surgeryDetails);
+    }
+    ,[surgeryDetails])
 
 
     const [open, setOpen] = React.useState(false);
@@ -282,6 +300,9 @@ export default function DetailView() {
                                 <IconButton variant="soft" color="primary" size="sm" onClick={handleOpen}>
                                     <EditNoteIcon />
                                 </IconButton >
+                                <IconButton variant="soft" color="primary" size="sm" onClick={()=>{navigateToCase(String(id))}}>
+                                    <EditIcon />
+                                </IconButton>
                                 <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
                             </Stack>
                         </Stack>
@@ -333,7 +354,7 @@ export default function DetailView() {
                         Documents
                     </Tab>
                 </TabList>
-                <TabPanel value={0}>
+                {/* <TabPanel value={0}>
                     <AccordionGroup
                         variant="plain"
                         transition="0.2s"
@@ -370,12 +391,14 @@ export default function DetailView() {
                                     </Typography>
                                 </ListItemContent>
                             </AccordionSummary>
-                            <AccordionDetails>
-                                <SurgeryDetails surgeryDetails={caseDetails.surgery_scheduled[0]} />
-                            </AccordionDetails>
+                            <AccordionDetails> */}
+                                {surgeryDetails.map((item:any, index:any) => {
+                                    return <SurgeryDetails key={index} surgeryDetails={item.surgeryDetails} />
+                                })}
+                            {/* </AccordionDetails>
                         </Accordion>
                     </AccordionGroup>
-                </TabPanel>
+                </TabPanel> */}
                 <TabPanel value={1}>
                     <AccordionGroup
                         variant="plain"
