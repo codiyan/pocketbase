@@ -27,7 +27,7 @@
   "main": "index.tsx",
   "scripts": {
     "start": "react-scripts start",
-    "build": "BUILD_PATH='../pb_public' react-scripts build",
+    "build": "set BUILD_PATH=../../pb_public && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
