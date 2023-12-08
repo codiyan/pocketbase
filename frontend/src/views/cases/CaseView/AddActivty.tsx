@@ -40,53 +40,30 @@ const AddActivity: React.FC<AddActivityProps> = (
     //     setSelectedType(newValue!);
     // };
 
-
+    const [data, setdata] = useState({
+        note: "",
+    });
+    const handleChange = (e: any) => {
+        setdata({ ...data, [e.target.name]: e.target.value });
+    };
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    // const [note, setNote] = useState('');
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         //  const formData = new FormData(event.currentTarget);
 
         try {
-            // const activityResponse = await pb
-            //     .collection("case_activity_item")
-            //     .create(formData);
-            // const activityId = activityResponse.id;
-            // const caseId = formData.get("case");
-            // if (caseId) {
-            //     const caseResponse = await pb
-            //         .collection("cases")
-            //         .getOne(caseId.toString());
-            //     const currentActivities = caseResponse.activity_items || [];
-            //     await pb.collection("cases").update(caseId.toString(), {
-            //         activity_items: [...currentActivities, activityId],
-            //     });
-            // }
-
             if (caseId && type === 'note') {
                 const acitivity_item = await pb.collection('case_activity_item').create({
                     type: 'note',
                     meta: {
-                        note: 'test note 2'
+                        note: data.note,
                     },
                     case: caseId,
                 });
 
-                // const acitivity_item_id = acitivity_item.map((item: any) => item.id);
-
-
-                // if (acitivity_item.id) {
-
-                //     const cases = await pb.collection('cases').update(caseId, {
-                //         // append single tag
-                //         'activity_items+': acitivity_item.id,
-
-                //     }
-
-                //     )
-                //     console.log(cases);
-                // }
             }
             handleClose();
 
@@ -147,6 +124,11 @@ const AddActivity: React.FC<AddActivityProps> = (
                                                 name="note"
                                                 placeholder="Enter Note"
                                                 minRows='3'
+                                                value={data.note}
+
+                                                onChange={(e) => {
+                                                    handleChange(e);
+                                                }}
                                             />
                                         </FormControl>
                                     )}

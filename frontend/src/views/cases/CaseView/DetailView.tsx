@@ -34,6 +34,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { Chip, TabPanel } from '@mui/joy';
 import SurgeryDetails from './SurgeryDetails';
+import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 
 import AccordionGroup from '@mui/joy/AccordionGroup';
 import Accordion from '@mui/joy/Accordion';
@@ -141,6 +142,7 @@ export default function DetailView() {
             }
         ]
     });
+    const [open, setOpen] = React.useState(false);
 
 
     // make async await
@@ -153,9 +155,18 @@ export default function DetailView() {
                     if (caseDetailsResponse) {
                         // calculate age using util method calculateAge
                         let age = calculateAge(caseDetailsResponse.dob);
+                        let activity_items = [];
+                        if (caseDetailsResponse.expand) {
+                            activity_items = (caseDetailsResponse as any).expand['case_activity_item(case)'] || [];
+                            // sort by created date
+                            activity_items.sort((a: any, b: any) => {
+                                return new Date(b.created).getTime() - new Date(a.created).getTime();
+                            });
+                        }
                         setCaseDetailsNew({
                             ...caseDetailsResponse,
                             age: age,
+                            activity_items
                         });
                     }
                 }
@@ -165,10 +176,9 @@ export default function DetailView() {
         };
 
         fetchData();
-    }, [id]);
+    }, [id, open]);
 
 
-    const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => setOpen(true);
 
@@ -209,7 +219,7 @@ export default function DetailView() {
                                             alt=""
                                         />
                                     </AspectRatio>
-                                    <Stack direction={{ md: 'row', sm: 'column' }} justifyContent="space-between" spacing={3} >
+                                    <Stack direction={"column"} justifyContent="space-between"  >
                                         <Typography
                                             level="h2"
                                             sx={{
@@ -221,70 +231,81 @@ export default function DetailView() {
                                             {/* every place add null checks */}
                                             {caseDetailsNew?.first_name} {caseDetailsNew?.last_name}
                                         </Typography>
-                                        <Stack direction="column" justifyContent="space-between " >
-                                            <Typography
-                                                level="title-sm"
-                                                sx={{
-                                                    mt: 1,
-                                                    mb: 2,
+                                        <Stack direction="row" justifyContent="flex-start" alignItems="center" >
 
-                                                    mx: 2,
-                                                }}
-                                            >
-                                                Age {caseDetailsNew?.age}
-                                            </Typography>
-                                            <Typography
-                                                level="title-sm"
-                                                sx={{
-                                                    mt: 1,
-                                                    mb: 2,
-                                                    mx: 2,
+                                            <Stack direction="column" justifyContent="flex-start " >
+                                                <Typography
+                                                    level="title-sm"
+                                                    sx={{
+                                                        mt: 1,
+                                                        mb: 2,
 
-                                                }}
-                                            >
-                                                Gender {caseDetails.gender}
-                                            </Typography>
-                                        </Stack>
-                                        <Stack direction="column" justifyContent="space-between">
-
-                                            <Typography
-                                                level="title-sm"
-                                                sx={{
-                                                    mt: 1,
-                                                    mb: 2,
-                                                    mx: 2,
-                                                }}
-                                            >
-                                                Status
-
-                                                <Chip
-                                                    sx={{ ml: 3 }}
-                                                    color="primary"
+                                                        mx: 2,
+                                                    }}
                                                 >
-                                                    {caseDetailsNew?.status}
-                                                </Chip>
+                                                    Age {caseDetailsNew?.age}
+                                                </Typography>
+                                                <Typography
+                                                    level="title-sm"
+                                                    sx={{
+                                                        mt: 1,
+                                                        mb: 2,
+                                                        mx: 2,
 
-                                            </Typography>
-                                            <Typography
-                                                level="title-sm"
-                                                sx={{
-                                                    mt: 1,
-                                                    mb: 2,
-                                                    mx: 2,
-                                                }}
-                                            >
-                                                Email {caseDetailsNew?.email}
-                                            </Typography>
+                                                    }}
+                                                >
+                                                    Gender {caseDetails.gender}
+                                                </Typography>
+                                            </Stack>
+                                            <Stack direction="column" justifyContent="flex-start">
+
+                                                <Typography
+                                                    level="title-sm"
+                                                    sx={{
+                                                        mt: 1,
+                                                        mb: 2,
+                                                        mx: 2,
+                                                    }}
+                                                >
+                                                    Status
+
+                                                    <Chip
+                                                        sx={{ ml: 3 }}
+                                                        color="primary"
+                                                    >
+                                                        {caseDetailsNew?.status}
+                                                    </Chip>
+
+                                                </Typography>
+                                                <Typography
+                                                    level="title-sm"
+                                                    sx={{
+                                                        mt: 1,
+                                                        mb: 2,
+                                                        mx: 2,
+                                                    }}
+                                                >
+                                                    Email {caseDetailsNew?.email}
+                                                </Typography>
+                                            </Stack>
                                         </Stack>
+
+
                                     </Stack>
                                 </Stack>
 
                             </Stack>
-                            <Stack direction="row-reverse" alignItems="baseline" justifyContent="flex-end" spacing={3}>
-                                <IconButton variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                            <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" spacing={3}>
+                                <IconButton title='Add Note' variant="soft" color="primary" size="sm" onClick={handleOpen}>
                                     <EditNoteIcon />
                                 </IconButton >
-                                <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
+                                {/* // add tool tip to icon */}
+
+
+                                <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                                    <DataSaverOnIcon />
+                                </IconButton >
+
                             </Stack>
                         </Stack>
                     </Card>
@@ -403,7 +424,9 @@ export default function DetailView() {
                             },
                         }}
                     >
-                        <ActivityLogComponent case_activity_item={caseDetails.case_activity_item} />
+
+                        <ActivityLogComponent case_activity_item={caseDetailsNew?.activity_items || []} />
+
                     </AccordionGroup>
                 </TabPanel>
                 <TabPanel value={2}>
@@ -413,5 +436,9 @@ export default function DetailView() {
             </Tabs>
             {/* below is example code from mui which can be used for responsive ness and other stuctrure settig */}
         </Box>
+        {open &&
+            <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
+        }
+
     </Stack >
 }
