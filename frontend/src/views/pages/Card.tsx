@@ -11,11 +11,12 @@ type FileCardProps = {
     file: string;
     created: string;
     updated: string;
+    size?: number;
   };
 };
 
 const FileCard: React.FC<FileCardProps> = ({ file }) => {
-  const { id, file: fileName } = file;
+  const { id, file: fileName, size } = file;
 
   const getIcon = (fileName: string) => {
     if (fileName.endsWith(".pdf")) return PictureAsPdfOutlinedIcon;

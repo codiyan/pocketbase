@@ -10,28 +10,42 @@ type FileData = {
   file: string;
   created: string;
   updated: string;
-  name: string;
-  size: string;
-  label: string;
-  Icon: React.ElementType;
+  size?: number;
 };
 
 const View: React.FC = () => {
   const [files, setFiles] = useState<FileData[]>([]);
+  console.log("files:", files);
   useEffect(() => {
-    async function fetchFiles() {
-      try {
-        const response = (await pb
-          .collection("attachments")
-          .getFullList()) as FileData[];
-        setFiles(response);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    }
-
     fetchFiles();
   }, []);
+
+  const fetchFiles = async () => {
+    try {
+      const response = (await pb
+        .collection("attachments")
+        .getFullList()) as FileData[];
+      setFiles(response);
+    } catch (error) {
+      console.error("Failed to fetch files:", error);
+    }
+  };
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      console.log("file:", file);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        await pb.collection("attachments").create(formData);
+        fetchFiles();
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+  };
 
   return (
     <Box sx={{ maxWidth: 900, margin: "auto" }}>
@@ -42,18 +56,29 @@ const View: React.FC = () => {
           padding: 2,
         }}
       >
-        <Button
-          sx={{
-            borderRadius: "20px",
-            backgroundColor: "#000000",
-            color: "#ffffff",
-            "&:hover": {
-              backgroundColor: "#333333",
-            },
-          }}
-        >
-          Add new file
-        </Button>
+        <input
+          accept="image/*, .pdf, .xlsx"
+          style={{ display: "none" }}
+          id="raised-button-file"
+          multiple
+          type="file"
+          onChange={handleFileChange}
+        />
+        <label htmlFor="raised-button-file">
+          <Button
+            component="span"
+            sx={{
+              borderRadius: "20px",
+              backgroundColor: "#000000",
+              color: "#ffffff",
+              "&:hover": {
+                backgroundColor: "#333333",
+              },
+            }}
+          >
+            Add new file
+          </Button>
+        </label>
       </Box>
       <Box
         sx={{
@@ -62,8 +87,8 @@ const View: React.FC = () => {
           gap: 2,
         }}
       >
-        {files.map((file, index) => (
-          <Card key={index} file={file} />
+        {files.map((file) => (
+          <Card key={file.id} file={file} />
         ))}
       </Box>
     </Box>
