@@ -39,10 +39,10 @@ import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import AccordionGroup from '@mui/joy/AccordionGroup';
 import Accordion from '@mui/joy/Accordion';
 import AccordionDetails, {
-    accordionDetailsClasses,
+  accordionDetailsClasses,
 } from '@mui/joy/AccordionDetails';
 import AccordionSummary, {
-    accordionSummaryClasses,
+  accordionSummaryClasses,
 } from '@mui/joy/AccordionSummary';
 import Switch from '@mui/joy/Switch';
 
@@ -69,388 +69,392 @@ import { calculateAge } from '../../../lib/utils';
 import { ca } from 'date-fns/locale';
 import DefaultPic from '../../../assets/default-pic.jpg';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import DocumentView from '../../../components/DocumentView';
 export default function DetailView() {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
-    const [caseDetails, setCaseDetails] = useState({
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'dd@kdk.com',
-        phone: '123-456-7890',
-        status: 'scheduled',
-        age: 19,
-        gender: "Male",
-        case_activity_item: [
-            {
-                type: 'note',
-                user: 33,
-                attachments: [],
-                note: 'This patient is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
-                created: '2023-12-03T13:56:00-04:00'
-            },
-            {
-                type: 'note',
-                user: 33,
-                attachments: [],
-                note: 'This patient is a good  a candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
-                created: '2023-12-03T13:56:00-04:00'
-            }, {
-                type: 'note',
-                user: 33,
-                attachments: [],
-                note: 'This patient is a good as candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
-                created: '2023-12-03T13:56:00-04:00'
-            }, {
-                type: 'note',
-                user: 33,
-                attachments: [],
-                note: 'This patient is a good  3 candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
-                created: '2023-12-03T13:56:00-04:00'
-            },
-            {
-                type: 'surgery_scheduled_added',
-                user: 33,
-                meta: {
-                    surgery_scheduled_id: 90,
-                }
-                ,
-                created: '2023-12-03T09:00:00-04:00'
-            }
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
+  const [caseDetails, setCaseDetails] = useState({
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'dd@kdk.com',
+    phone: '123-456-7890',
+    status: 'scheduled',
+    age: 19,
+    gender: "Male",
+    case_activity_item: [
+      {
+        type: 'note',
+        user: 33,
+        attachments: [],
+        note: 'This patient is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
+        created: '2023-12-03T13:56:00-04:00'
+      },
+      {
+        type: 'note',
+        user: 33,
+        attachments: [],
+        note: 'This patient is a good  a candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
+        created: '2023-12-03T13:56:00-04:00'
+      }, {
+        type: 'note',
+        user: 33,
+        attachments: [],
+        note: 'This patient is a good as candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
+        created: '2023-12-03T13:56:00-04:00'
+      }, {
+        type: 'note',
+        user: 33,
+        attachments: [],
+        note: 'This patient is a good  3 candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home. He is a good candidate for surgery because of his age and health. He is a non-smoker and has no other health issues. He is also very active and has a good support system at home.',
+        created: '2023-12-03T13:56:00-04:00'
+      },
+      {
+        type: 'surgery_scheduled_added',
+        user: 33,
+        meta: {
+          surgery_scheduled_id: 90,
+        }
+        ,
+        created: '2023-12-03T09:00:00-04:00'
+      }
+    ],
+    surgery_scheduled: [
+      {
+
+        start: "2021-10-01T09:00:00-04:00",
+        end: "2021-10-01T09:30:00-04:00",
+        type: 'surgery',
+        duration: 30,
+        anesthesia_type: 'choice',
+        anesthesia_position: 'surpine',
+        specialty: 'podiatry',
+        procedures: [
+          {
+            name: "Right Akin",
+            site: 'foot',
+            laterality: 'right',
+            cpt_code: '28285',
+          },
+          {
+            name: 'Weil osteotomy',
+            site: 'foot',
+            laterality: 'right',
+            cpt_code: '28285',
+          }
         ],
-        surgery_scheduled: [
-            {
+      }
+    ]
+  });
+  const [open, setOpen] = React.useState(false);
 
-                start: "2021-10-01T09:00:00-04:00",
-                end: "2021-10-01T09:30:00-04:00",
-                type: 'surgery',
-                duration: 30,
-                anesthesia_type: 'choice',
-                anesthesia_position: 'surpine',
-                specialty: 'podiatry',
-                procedures: [
-                    {
-                        name: "Right Akin",
-                        site: 'foot',
-                        laterality: 'right',
-                        cpt_code: '28285',
-                    },
-                    {
-                        name: 'Weil osteotomy',
-                        site: 'foot',
-                        laterality: 'right',
-                        cpt_code: '28285',
-                    }
-                ],
+  // make async await
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (id) {
+          const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case)" });
+          // Process caseDetailsResponse as needed]
+          if (caseDetailsResponse) {
+            // calculate age using util method calculateAge
+            let age = calculateAge(caseDetailsResponse.dob);
+            let activity_items = [];
+            if (caseDetailsResponse.expand) {
+              activity_items = (caseDetailsResponse as any).expand['case_activity_item(case)'] || [];
+              // sort by created date
+              activity_items.sort((a: any, b: any) => {
+                return new Date(b.created).getTime() - new Date(a.created).getTime();
+              });
             }
-        ]
-    });
-    const [open, setOpen] = React.useState(false);
+            setCaseDetailsNew({
+              ...caseDetailsResponse,
+              age: age,
+              activity_items
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching case details:', error);
+      }
+    };
+
+    fetchData();
+  }, [id, open]);
+
+  const handleOpen = () => setOpen(true);
+  const navigateToCases = () => {
+    navigate('/cases/' + id, { replace: true });
+  }
+
+  return <Stack>
+    <Box
+      sx={{
+        flex: 1,
+        width: '100%',
+      }}
+    >
+      <Box
+        sx={{
+          bgcolor: 'background.body',
+        }}
+      >
+        <Box
+          sx={{
+            px: {
+              xs: 2,
+              md: 6,
+            },
+          }}
+        >
+          <Card>
+            <Stack>
+              <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={3}
+              >
+                <Stack direction={{ md: 'row', sm: 'column' }} alignItems={{ md: "flex-start", sm: 'center' }} justifyContent={"center"} spacing={3}>
+                  <AspectRatio
+                    ratio="1"
+                    maxHeight={200}
+                    sx={{ flex: 1, minWidth: 120, borderRadius: "100%" }}
+                  >
+                    <img
+                      //if data.avatar is null, use default pic
+                      src={DefaultPic}
+                      // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+                      // loading="lazy"
+                      alt=""
+                    />
+                  </AspectRatio>
+                  <Stack direction={"column"} justifyContent="space-between"  >
+                    <Typography
+                      level="h2"
+                      sx={{
+                        mt: 1,
+                        mx: 2,
+
+                      }}
+                    >
+                      {/* every place add null checks */}
+                      {caseDetailsNew?.first_name} {caseDetailsNew?.last_name}
+                    </Typography>
+                    <Stack direction="row" justifyContent="flex-start" alignItems="center" >
+
+                      <Stack direction="column" justifyContent="flex-start " >
+                        <Typography
+                          level="title-sm"
+                          sx={{
+                            mt: 1,
+                            mb: 2,
+
+                            mx: 2,
+                          }}
+                        >
+                          Age {caseDetailsNew?.age}
+                        </Typography>
+                        <Typography
+                          level="title-sm"
+                          sx={{
+                            mt: 1,
+                            mb: 2,
+                            mx: 2,
+                          }}
+                        >
+                          Gender {caseDetails.gender}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="column" justifyContent="flex-start">
+                        <Typography
+                          level="title-sm"
+                          sx={{
+                            mt: 1,
+                            mb: 2,
+                            mx: 2,
+                          }}
+                        >
+                          Status
+
+                          <Chip
+                            sx={{ ml: 3 }}
+                            color="primary"
+                          >
+                            {caseDetailsNew?.status}
+                          </Chip>
+
+                        </Typography>
+                        <Typography
+                          level="title-sm"
+                          sx={{
+                            mt: 1,
+                            mb: 2,
+                            mx: 2,
+                          }}
+                        >
+                          Email {caseDetailsNew?.email}
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              </Stack>
+              <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" spacing={3}>
+                <IconButton title='Add Note' variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                  <EditNoteIcon />
+                </IconButton >
+                {/* // add tool tip to icon */}
 
 
-    // make async await
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (id) {
-                    const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case)" });
-                    // Process caseDetailsResponse as needed]
-                    if (caseDetailsResponse) {
-                        // calculate age using util method calculateAge
-                        let age = calculateAge(caseDetailsResponse.dob);
-                        let activity_items = [];
-                        if (caseDetailsResponse.expand) {
-                            activity_items = (caseDetailsResponse as any).expand['case_activity_item(case)'] || [];
-                            // sort by created date
-                            activity_items.sort((a: any, b: any) => {
-                                return new Date(b.created).getTime() - new Date(a.created).getTime();
-                            });
-                        }
-                        setCaseDetailsNew({
-                            ...caseDetailsResponse,
-                            age: age,
-                            activity_items
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching case details:', error);
-            }
-        };
+                <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                  <DataSaverOnIcon />
+                </IconButton >
 
-        fetchData();
-    }, [id, open]);
+                <IconButton title='Patient Profile' variant="soft" color="primary" size="sm" onClick={navigateToCases}>
+                  <ManageAccountsIcon />
 
+                </IconButton >
 
+              </Stack>
+            </Stack>
+          </Card>
+        </Box>
+      </Box>
+      <Tabs
+        defaultValue={0}
+        sx={{
+          bgcolor: 'transparent',
+        }}
+      >
+        <TabList
+          tabFlex={1}
+          size="sm"
+          sx={{
+            zIndex: 1000,
+            position: 'sticky',
+            top: {
+              sm: 3000,
+              md: 0,
+            },
+            bgcolor: 'background.body',
+            pl: {
+              xs: 0,
+              md: 4,
+            },
+            justifyContent: 'left',
+            [`&& .${tabClasses.root}`]: {
+              flex: 'initial',
+              bgcolor: 'transparent',
+              [`&.${tabClasses.selected}`]: {
+                fontWeight: '600',
+                '&::after': {
+                  height: '2px',
+                  bgcolor: 'primary.500',
+                },
+              },
+            },
+          }}
+        >
+          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
+            Primary Details
+          </Tab>
+          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
+            Activity Log
+          </Tab>
+          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={2}>
+            Documents
+          </Tab>
+        </TabList>
+        <TabPanel value={0}>
+          <AccordionGroup
+            variant="plain"
+            transition="0.2s"
+            sx={{
+              maxWidth: '800px',
+              mx: 'auto',
+              px: {
+                xs: 2,
+                md: 6,
+              },
+              py: {
+                xs: 2,
+                md: 3,
+              },
+              borderRadius: 'md',
+              [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
+              {
+                paddingBlock: '1rem',
+              },
+              [`& .${accordionSummaryClasses.button}`]: {
+                paddingBlock: '1rem',
+              },
+            }}
+          >
+            <Accordion>
+              <AccordionSummary>
+                <Avatar color="primary">
+                  <TapAndPlayRoundedIcon />
+                </Avatar>
+                <ListItemContent>
+                  <Typography level="title-md">Sugery Details</Typography>
+                  <Typography level="body-sm">
+                    Activate or deactivate your connections
+                  </Typography>
+                </ListItemContent>
+              </AccordionSummary>
+              <AccordionDetails>
+                <SurgeryDetails surgeryDetails={caseDetails.surgery_scheduled[0]} />
+              </AccordionDetails>
+            </Accordion>
+          </AccordionGroup>
+        </TabPanel>
+        <TabPanel value={1}>
+          <AccordionGroup
+            variant="plain"
+            transition="0.2s"
+            sx={{
+              maxWidth: '800px',
+              mx: 'auto',
+              px: {
+                xs: 2,
+                md: 6,
+              },
+              py: {
+                xs: 2,
+                md: 3,
+              },
+              borderRadius: 'md',
+              [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
+              {
+                paddingBlock: '1rem',
+              },
+              [`& .${accordionSummaryClasses.button}`]: {
+                paddingBlock: '1rem',
+              },
+            }}
+          >
 
-    const handleOpen = () => setOpen(true);
-    const navigateToCases = () => {
-        navigate('/cases/' + id, { replace: true });
+            <ActivityLogComponent case_activity_item={caseDetailsNew?.activity_items || []} />
+
+          </AccordionGroup>
+        </TabPanel>
+        <TabPanel value={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+              justifyContent: "center",
+              alignContent: "center",
+              maxWidth: "calc(100% - 240px)",
+              margin: "auto",
+              padding: "0 120px",
+            }}
+          >
+            <DocumentView caseId={id as string} />
+          </Box>
+        </TabPanel>
+      </Tabs>
+      {/* below is example code from mui which can be used for responsive ness and other stuctrure settig */}
+    </Box>
+    {open &&
+      <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
     }
 
-    return <Stack>
-        <Box
-            sx={{
-                flex: 1,
-                width: '100%',
-            }}
-        >
-            <Box
-                sx={{
-                    bgcolor: 'background.body',
-                }}
-            >
-                <Box
-                    sx={{
-                        px: {
-                            xs: 2,
-                            md: 6,
-                        },
-                    }}
-                >
-                    <Card>
-                        <Stack>
-                            <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={3}
-                            >
-                                <Stack direction={{ md: 'row', sm: 'column' }} alignItems={{ md: "flex-start", sm: 'center' }} justifyContent={"center"} spacing={3}>
-                                    <AspectRatio
-                                        ratio="1"
-                                        maxHeight={200}
-                                        sx={{ flex: 1, minWidth: 120, borderRadius: "100%" }}
-                                    >
-                                        <img
-                                            //if data.avatar is null, use default pic
-                                            src={DefaultPic}
-                                            // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-                                            // loading="lazy"
-                                            alt=""
-                                        />
-                                    </AspectRatio>
-                                    <Stack direction={"column"} justifyContent="space-between"  >
-                                        <Typography
-                                            level="h2"
-                                            sx={{
-                                                mt: 1,
-                                                mx: 2,
-
-                                            }}
-                                        >
-                                            {/* every place add null checks */}
-                                            {caseDetailsNew?.first_name} {caseDetailsNew?.last_name}
-                                        </Typography>
-                                        <Stack direction="row" justifyContent="flex-start" alignItems="center" >
-
-                                            <Stack direction="column" justifyContent="flex-start " >
-                                                <Typography
-                                                    level="title-sm"
-                                                    sx={{
-                                                        mt: 1,
-                                                        mb: 2,
-
-                                                        mx: 2,
-                                                    }}
-                                                >
-                                                    Age {caseDetailsNew?.age}
-                                                </Typography>
-                                                <Typography
-                                                    level="title-sm"
-                                                    sx={{
-                                                        mt: 1,
-                                                        mb: 2,
-                                                        mx: 2,
-
-                                                    }}
-                                                >
-                                                    Gender {caseDetails.gender}
-                                                </Typography>
-                                            </Stack>
-                                            <Stack direction="column" justifyContent="flex-start">
-
-                                                <Typography
-                                                    level="title-sm"
-                                                    sx={{
-                                                        mt: 1,
-                                                        mb: 2,
-                                                        mx: 2,
-                                                    }}
-                                                >
-                                                    Status
-
-                                                    <Chip
-                                                        sx={{ ml: 3 }}
-                                                        color="primary"
-                                                    >
-                                                        {caseDetailsNew?.status}
-                                                    </Chip>
-
-                                                </Typography>
-                                                <Typography
-                                                    level="title-sm"
-                                                    sx={{
-                                                        mt: 1,
-                                                        mb: 2,
-                                                        mx: 2,
-                                                    }}
-                                                >
-                                                    Email {caseDetailsNew?.email}
-                                                </Typography>
-                                            </Stack>
-                                        </Stack>
-
-
-                                    </Stack>
-                                </Stack>
-
-                            </Stack>
-                            <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" spacing={3}>
-                                <IconButton title='Add Note' variant="soft" color="primary" size="sm" onClick={handleOpen}>
-                                    <EditNoteIcon />
-                                </IconButton >
-                                {/* // add tool tip to icon */}
-
-
-                                <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={handleOpen}>
-                                    <DataSaverOnIcon />
-                                </IconButton >
-
-                                <IconButton title='Patient Profile' variant="soft" color="primary" size="sm" onClick={navigateToCases}>
-                                    <ManageAccountsIcon />
-
-                                </IconButton >
-
-                            </Stack>
-                        </Stack>
-                    </Card>
-                </Box>
-            </Box>
-            <Tabs
-                defaultValue={0}
-                sx={{
-                    bgcolor: 'transparent',
-                }}
-            >
-                <TabList
-                    tabFlex={1}
-                    size="sm"
-                    sx={{
-                        zIndex: 1000,
-                        position: 'sticky',
-                        top: {
-                            sm: 3000,
-                            md: 0,
-                        },
-                        bgcolor: 'background.body',
-                        pl: {
-                            xs: 0,
-                            md: 4,
-                        },
-                        justifyContent: 'left',
-                        [`&& .${tabClasses.root}`]: {
-                            flex: 'initial',
-                            bgcolor: 'transparent',
-                            [`&.${tabClasses.selected}`]: {
-                                fontWeight: '600',
-                                '&::after': {
-                                    height: '2px',
-                                    bgcolor: 'primary.500',
-                                },
-                            },
-                        },
-                    }}
-                >
-                    <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
-                        Primary Details
-                    </Tab>
-                    <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
-                        Activity Log
-                    </Tab>
-                    <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={2}>
-                        Documents
-                    </Tab>
-                </TabList>
-                <TabPanel value={0}>
-                    <AccordionGroup
-                        variant="plain"
-                        transition="0.2s"
-                        sx={{
-                            maxWidth: '800px',
-                            mx: 'auto',
-                            px: {
-                                xs: 2,
-                                md: 6,
-                            },
-                            py: {
-                                xs: 2,
-                                md: 3,
-                            },
-                            borderRadius: 'md',
-                            [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
-                            {
-                                paddingBlock: '1rem',
-                            },
-                            [`& .${accordionSummaryClasses.button}`]: {
-                                paddingBlock: '1rem',
-                            },
-                        }}
-                    >
-                        <Accordion>
-                            <AccordionSummary>
-                                <Avatar color="primary">
-                                    <TapAndPlayRoundedIcon />
-                                </Avatar>
-                                <ListItemContent>
-                                    <Typography level="title-md">Sugery Details</Typography>
-                                    <Typography level="body-sm">
-                                        Activate or deactivate your connections
-                                    </Typography>
-                                </ListItemContent>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <SurgeryDetails surgeryDetails={caseDetails.surgery_scheduled[0]} />
-                            </AccordionDetails>
-                        </Accordion>
-                    </AccordionGroup>
-                </TabPanel>
-                <TabPanel value={1}>
-                    <AccordionGroup
-                        variant="plain"
-                        transition="0.2s"
-                        sx={{
-                            maxWidth: '800px',
-                            mx: 'auto',
-                            px: {
-                                xs: 2,
-                                md: 6,
-                            },
-                            py: {
-                                xs: 2,
-                                md: 3,
-                            },
-                            borderRadius: 'md',
-                            [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]:
-                            {
-                                paddingBlock: '1rem',
-                            },
-                            [`& .${accordionSummaryClasses.button}`]: {
-                                paddingBlock: '1rem',
-                            },
-                        }}
-                    >
-
-                        <ActivityLogComponent case_activity_item={caseDetailsNew?.activity_items || []} />
-
-                    </AccordionGroup>
-                </TabPanel>
-                <TabPanel value={2}>
-                    {/* responsive grid to show documents
-                */}
-                </TabPanel>
-            </Tabs>
-            {/* below is example code from mui which can be used for responsive ness and other stuctrure settig */}
-        </Box>
-        {open &&
-            <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
-        }
-
-    </Stack >
+  </Stack >
 }
