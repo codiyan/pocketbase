@@ -2,32 +2,49 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Card from "./Card";
+import FileCard from "./FileCard";
 import { pb } from "../services/pocketbase";
+
 type FileData = {
   id: string;
   attachment: string;
   created: string;
   updated: string;
   size?: number;
+  case: string;
 };
 
-const View: React.FC = () => {
-  const [files, setFiles] = useState<FileData[]>([]);
-  useEffect(() => {
-    fetchFiles();
-  }, []);
+type ViewProps = {
+  caseId: string;
+};
 
-  const fetchFiles = async () => {
+const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
+  const [files, setFiles] = useState<FileData[]>([]);
+
+  useEffect(() => {
+    fetchFiles(caseId);
+  }, [caseId]);
+
+  const fetchFiles = async (caseId: string) => {
     try {
-      const response = (await pb
-        .collection("attachments")
-        .getFullList()) as FileData[];
-      setFiles(response);
+      const response = await pb.collection("attachments").getList(1, 50, {
+        filter: `case='${caseId}'`,
+      });
+
+      const filesData: FileData[] = response.items.map((item) => ({
+        id: item.id,
+        attachment: item.attachment,
+        created: item.created,
+        updated: item.updated,
+        case: item.case,
+      }));
+
+      setFiles(filesData);
     } catch (error) {
-      console.error("Failed to fetch files:", error);
+      console.error(error);
     }
   };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -35,14 +52,13 @@ const View: React.FC = () => {
       const file = event.target.files[0];
       try {
         const formData = new FormData();
-        // formData.append("file", file);
         formData.append("attachment", file);
-
+        formData.append("case", caseId);
         await pb.collection("attachments").create(formData);
 
-        fetchFiles();
+        fetchFiles(caseId);
       } catch (error) {
-        console.error("Error uploading file:", error);
+        console.error(error);
       }
     }
   };
@@ -68,9 +84,11 @@ const View: React.FC = () => {
           <Button
             component="span"
             sx={{
-              borderRadius: "20px",
+              borderRadius: "16px",
               backgroundColor: "#000000",
               color: "#ffffff",
+              padding: "6px 12px",
+              fontSize: "0.75rem",
               "&:hover": {
                 backgroundColor: "#333333",
               },
@@ -88,11 +106,11 @@ const View: React.FC = () => {
         }}
       >
         {files.map((file) => (
-          <Card key={file.id} file={file} />
+          <FileCard key={file.id} file={file} />
         ))}
       </Box>
     </Box>
   );
 };
 
-export default View;
+export default DocumentView;

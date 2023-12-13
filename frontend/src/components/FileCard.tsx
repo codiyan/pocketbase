@@ -31,12 +31,28 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
     const extension = name.substring(name.lastIndexOf("."));
     return nameWithoutId + extension;
   };
-  const handleFileOpen = () => {
+
+  const handleFileOpen = async () => {
     const fileUrl = `http://127.0.0.1:8090/api/files/attachments/${id}/${encodeURIComponent(
       fileName
     )}`;
-    window.open(fileUrl, "_blank");
+
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   const getFileExtension = (name: string) => {
     const matches = name.match(/(?<=\.)\w+$/);
     return matches ? matches[0].toUpperCase() : "UNKNOWN";

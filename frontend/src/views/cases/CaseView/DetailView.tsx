@@ -69,7 +69,8 @@ import { calculateAge } from "../../../lib/utils";
 import { ca } from "date-fns/locale";
 import DefaultPic from "../../../assets/default-pic.jpg";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import View from "../../../components/View";
+import DocumentView from "../../../components/DocumentView";
+
 export default function DetailView() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -475,10 +476,14 @@ export default function DetailView() {
               sx={{
                 display: "grid",
                 gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
-                gap: 2,
+                justifyContent: "center",
+                alignContent: "center",
+                maxWidth: "calc(100% - 240px)",
+                margin: "auto",
+                padding: "0 120px",
               }}
             >
-              <View />
+              <DocumentView caseId={id as string} />
             </Box>
           </TabPanel>
         </Tabs>
