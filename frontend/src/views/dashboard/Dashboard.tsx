@@ -1,108 +1,120 @@
-// import React from "react";
-// import PocketBase from "pocketbase";
-// import { pb } from "../../services/pocketbase";
+import React, { useState } from "react";
+import { Card, Box, Typography } from "@mui/joy";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import CheckIcon from "@mui/icons-material/Check";
 
-// const Dashboard: React.FC = () => {
+import Button from "@mui/joy/Button";
+import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
 
-
-//   const uploadFile = async () => {
-//     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-
-//     if (fileInput && fileInput.files && fileInput.files.length > 0) {
-//       const formData = new FormData();
-//       formData.append("file", fileInput.files[0]);
-
-//       try {
-//         const createdRecord = await pb.collection("waqar").create(formData);
-//         console.log("createdRecord:", createdRecord);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     }
-//   };
-
-//   const downloadFile = (recordId: string, fileName: string) => {
-//     // const fileUrl = `${apiURL}/api/files/waqar/${recordId}/${fileName}`;
-//     // window.open(fileUrl, "_blank");
-//     alert('Code was wrong for downloading')
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" id="fileInput" accept=".pdf,.csv" />
-//       <button onClick={uploadFile}>Upload File</button>
-//       <button
-//         onClick={() => downloadFile("kc8og6u4sgujt3h", "minder_hyqVZX1GNP.pdf")}
-//       >
-//         Download File
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-
-import React from 'react';
-// import {
-//   Box,
-//   Typography,
-//   CircularProgress,
-//   Card,
-//   CardContent,
-//   Stack
-// } from '@mui/joy';
-import Box from '@mui/joy/Box';
-import Typography from '@mui/joy/Typography';
-// import CircularProgress from '@mui/joy/CircularProgress';
-import Stack from '@mui/joy/Stack';
-
-
-
-// import { PieChart, Pie, Tooltip, Cell } from 'recharts';
-
-// Dummy data
-const dashboardData = {
-  totalNewPatients: 25,
-  surgerySchedule: [
-    { name: 'Orthopedic', value: 10 },
-    { name: 'Podiatry', value: 8 },
-    { name: 'Others', value: 7 },
-  ],
-  totalSurgeriesCompleted: 15,
-  surgeonUtilization: {
-    freeTime: 30,
-    scheduledSurgeries: 60,
-    blockedTime: 10,
-  },
-  doctorUtilization: [
-    { name: 'Dr. Smith', utilization: 70 },
-    { name: 'Dr. Johnson', utilization: 85 },
-    // Add more doctors as needed
-  ],
-  // Add more dummy data as needed
+const icon = {
+  Views: <VisibilityOutlinedIcon />,
+  Clients: <PersonOutlineOutlinedIcon />,
+  Purchases: <CheckIcon />,
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+function DashboardStats() {
+  const [value, setValue] = useState("week");
 
-const Dashboard = () => {
+  const stats = [
+    { title: "Views", count: 31, change: "+3" },
+    { title: "Clients", count: 63, change: "+1" },
+    { title: "Purchases", count: 10, change: "+1" },
+  ];
   return (
-    <Box>
-      {/* <h1>Dashboard</h1> */}
-
-      <Typography level="h4" mb={2}>
-        Surgery Software Dashboard
-      </Typography>
-
-      <Stack>
-        <Box>
-          <Typography level="h4">Total New Patients</Typography>
-          <Typography level="h4">{dashboardData.totalNewPatients}</Typography>
-        </Box>
-      </Stack>
-    </Box>
-
-
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mt: 2,
+          mx: 2,
+        }}
+      >
+        <Typography level="body-md" sx={{ flexGrow: 1 }}>
+          Control and analyze your data in the easiest way
+        </Typography>
+        <ToggleButtonGroup
+          value={value}
+          onChange={(event, newValue) => {
+            if (newValue !== null) {
+              setValue(newValue);
+            }
+          }}
+          sx={{ ml: 2 }}
+        >
+          <Button value="week">Week</Button>
+          <Button value="month">Month</Button>
+          <Button value="year">Year</Button>
+        </ToggleButtonGroup>
+      </Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+          justifyContent: "center",
+          gap: 2,
+          mt: 12,
+          padding: 1,
+        }}
+      >
+        {stats.map((stat) => (
+          <Card
+            key={stat.title}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "22px",
+              margin: "auto",
+              width: "100%",
+              maxWidth: {
+                sm: 290,
+                xs: "100%",
+              },
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                padding: "16px",
+                boxSizing: "border-box",
+              }}
+            >
+              <Typography level="title-md">{stat.title}</Typography>
+              {icon[stat.title as keyof typeof icon]}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                padding: "16px",
+                boxSizing: "border-box",
+              }}
+            >
+              <Typography
+                level="h4"
+                sx={{
+                  fontWeight: "medium",
+                  fontSize: "2.25rem",
+                }}
+              >
+                {stat.count}
+              </Typography>
+              <Typography level="body-sm">{stat.change} last day</Typography>
+            </Box>
+          </Card>
+        ))}
+      </Box>
+    </>
   );
-};
+}
 
-export default Dashboard;
+export default DashboardStats;
