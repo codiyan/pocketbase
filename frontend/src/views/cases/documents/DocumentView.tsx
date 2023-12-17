@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import FileCard from "./FileCard";
-import { pb } from "../services/pocketbase";
+import { pb } from "../../../services/pocketbase";
+import ConsentForm from "./ConsentForm";
 
 type FileData = {
   id: string;
@@ -24,6 +25,10 @@ const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
   useEffect(() => {
     fetchFiles(caseId);
   }, [caseId]);
+
+  // open and closing for consentForm Model from this component
+  const [open, setOpen] = React.useState(false);
+
 
   const fetchFiles = async (caseId: string) => {
     try {
@@ -64,7 +69,7 @@ const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 900, margin: "auto" }}>
+    <Box sx={{ maxWidth: "90%", margin: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -72,6 +77,29 @@ const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
           padding: 2,
         }}
       >
+
+        <label htmlFor="raised-button-file">
+          <Button
+            //clicking on this button will open the consentForm model
+            onClick={() => setOpen(true)}
+            // component="span"
+            sx={{
+              borderRadius: "16px",
+              padding: "6px 12px",
+              marginX: 2,
+              fontSize: "0.75rem",
+              "&:hover": {
+                backgroundColor: "#333333",
+              },
+            }}
+
+
+          >
+
+            Consent Form
+          </Button>
+
+        </label>
         <input
           accept="image/*, .pdf, .xlsx"
           style={{ display: "none" }}
@@ -80,13 +108,12 @@ const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
           type="file"
           onChange={handleFileChange}
         />
+
         <label htmlFor="raised-button-file">
           <Button
             component="span"
             sx={{
               borderRadius: "16px",
-              backgroundColor: "#000000",
-              color: "#ffffff",
               padding: "6px 12px",
               fontSize: "0.75rem",
               "&:hover": {
@@ -96,19 +123,28 @@ const DocumentView: React.FC<ViewProps> = ({ caseId }) => {
           >
             Add new file
           </Button>
+
         </label>
+
+
+
       </Box>
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(1, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)" },
           gap: 2,
+          width: { xs: "100%", sm: "100%", },
         }}
       >
         {files.map((file) => (
           <FileCard key={file.id} file={file} />
         ))}
       </Box>
+
+      {/* consentForm model */}
+      {open && <ConsentForm open={open} setOpen={setOpen} />}
     </Box>
   );
 };

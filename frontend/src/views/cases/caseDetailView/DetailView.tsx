@@ -61,16 +61,34 @@ import AccessibilityNewRoundedIcon from '@mui/icons-material/AccessibilityNewRou
 import ZoomInRoundedIcon from '@mui/icons-material/ZoomInRounded';
 import SpatialTrackingRoundedIcon from '@mui/icons-material/SpatialTrackingRounded';
 import SettingsVoiceRoundedIcon from '@mui/icons-material/SettingsVoiceRounded';
-import ActivityLogComponent from './ActivityLog';
-import AddActivity from './AddActivty';
+import ActivityLogComponent from '../activityLog/ActivityLog';
+// import AddActivity from '../activityLog/AddActivty';
 import { useNavigate, useParams } from 'react-router-dom';
 import { pb } from '../../../services/pocketbase';
 import { calculateAge } from '../../../lib/utils';
 import { ca } from 'date-fns/locale';
 import DefaultPic from '../../../assets/default-pic.jpg';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import DocumentView from '../../../components/DocumentView';
+import DocumentView from '../documents/DocumentView';
+import AddSchedule from './AddSchedule';
+import { addHours, endOfWeek, startOfDay, startOfHour, startOfWeek, subDays } from 'date-fns';
+import AddActivity from '../activityLog/AddActivty';
+// import { pb } from '../../services/pocketbase';
 export default function DetailView() {
+
+  const [blockTimeModalProps, setBlockTimeModalProps] = React.useState<any>({
+    open: false,
+    start: new Date(),
+    end: new Date(),
+  })
+
+  const handleBlockTime = ({ start = new Date(), end = addHours(new Date(), 1) } = {}) => {
+    setBlockTimeModalProps({
+      open: true,
+      start,
+      end,
+    })
+  }
   const navigate = useNavigate();
   const { id } = useParams();
   const [caseDetailsNew, setCaseDetailsNew] = useState({} as any);
@@ -153,7 +171,7 @@ export default function DetailView() {
     const fetchData = async () => {
       try {
         if (id) {
-          const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case)" });
+          const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case).assigned_to" });
           // Process caseDetailsResponse as needed]
           if (caseDetailsResponse) {
             // calculate age using util method calculateAge
@@ -162,6 +180,7 @@ export default function DetailView() {
             if (caseDetailsResponse.expand) {
               activity_items = (caseDetailsResponse as any).expand['case_activity_item(case)'] || [];
               // sort by created date
+
               activity_items.sort((a: any, b: any) => {
                 return new Date(b.created).getTime() - new Date(a.created).getTime();
               });
@@ -171,6 +190,7 @@ export default function DetailView() {
               age: age,
               activity_items
             });
+            console.log(activity_items)
           }
         }
       } catch (error) {
@@ -182,6 +202,10 @@ export default function DetailView() {
   }, [id, open]);
 
   const handleOpen = () => setOpen(true);
+
+  const handleSchedule = () => {
+    navigate('/schedule/' + id, { replace: true });
+  }
   const navigateToCases = () => {
     navigate('/cases/' + id, { replace: true });
   }
@@ -302,13 +326,12 @@ export default function DetailView() {
                 {/* // add tool tip to icon */}
 
 
-                <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={handleOpen}>
+                <IconButton title='Schedule' variant="soft" color="primary" size="sm" onClick={() => handleBlockTime()}>
                   <DataSaverOnIcon />
                 </IconButton >
 
                 <IconButton title='Patient Profile' variant="soft" color="primary" size="sm" onClick={navigateToCases}>
                   <ManageAccountsIcon />
-
                 </IconButton >
 
               </Stack>
@@ -317,7 +340,7 @@ export default function DetailView() {
         </Box>
       </Box>
       <Tabs
-        defaultValue={0}
+        defaultValue={1}
         sx={{
           bgcolor: 'transparent',
         }}
@@ -435,7 +458,7 @@ export default function DetailView() {
           </AccordionGroup>
         </TabPanel>
         <TabPanel value={2}>
-          <Box
+          {/* <Box
             sx={{
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
@@ -445,9 +468,9 @@ export default function DetailView() {
               margin: "auto",
               padding: "0 120px",
             }}
-          >
-            <DocumentView caseId={id as string} />
-          </Box>
+          > */}
+          <DocumentView caseId={id as string} />
+          {/* </Box> */}
         </TabPanel>
       </Tabs>
       {/* below is example code from mui which can be used for responsive ness and other stuctrure settig */}
@@ -455,6 +478,16 @@ export default function DetailView() {
     {open &&
       <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
     }
+    {blockTimeModalProps &&
+      <AddSchedule
+        open={blockTimeModalProps.open}
+        start={blockTimeModalProps.start}
+        end={blockTimeModalProps.end}
+        onClose={() => setBlockTimeModalProps(null)}
+        onBlockTimeCreated={
+          console.log('block time created')
+        }
+      />}
 
   </Stack >
 }

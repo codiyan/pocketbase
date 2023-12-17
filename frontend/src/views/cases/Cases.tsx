@@ -14,7 +14,6 @@ import {
 } from "@mui/joy";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import { downloadCSV } from "../../lib/utils";
-import NewPatient from "./NewPatient";
 import { Link, Route, Routes } from "react-router-dom";
 import { Patient } from "../../lib/types";
 
@@ -29,6 +28,7 @@ export default function Cases() {
   };
 
   const getList = async () => {
+
     const records = await pb.collection("cases").getFullList({
       sort: "-created", requestKey: "null",
     });

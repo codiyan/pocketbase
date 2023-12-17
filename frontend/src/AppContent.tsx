@@ -17,10 +17,11 @@ import { Navigate, Route, Routes, BrowserRouter } from "react-router-dom";
 import Dashboard from "./views/dashboard/Dashboard";
 import Cases from "./views/cases/Cases";
 import AssignedAppointments from "./views/assigned/AssignedAppointments";
-import CaseView from "./views/cases/CaseView/CaseView";
+import CaseView from "./views/cases/caseDetailView/CaseView";
 import AddCase from "./views/addCase/AddCase";
-import DetailView from "./views/cases/CaseView/DetailView";
+import DetailView from "./views/cases/caseDetailView/DetailView";
 import CalendarScreen from "./views/calendar/CalendarScreen";
+import ConsentForm from "./views/cases/documents/ConsentForm";
 
 export default function AppContent() {
   return (

@@ -18,6 +18,7 @@ import Button from "@mui/joy/Button";
 import AppContent from "./AppContent";
 import { pb } from "./services/pocketbase";
 import { Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 export default function AppLayout() {
 
@@ -29,6 +30,11 @@ export default function AppLayout() {
       <Header />
       <SidebarNew menuItems={menuItems} />
       <AppContent />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+
+      />
     </>
   );
 }

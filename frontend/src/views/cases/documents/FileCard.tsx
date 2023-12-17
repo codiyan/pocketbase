@@ -66,12 +66,12 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
     <Card
       variant="outlined"
       sx={{
-        width: 280,
+        width: '280',
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         padding: 1,
-        backgroundColor: "#ffffff",
+        // backgroundColor: "#ffffff"
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         "&:hover": {
           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",

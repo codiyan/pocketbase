@@ -48,6 +48,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { ProceduresRecord } from "../../pocketbase-types";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 
@@ -80,6 +81,7 @@ export default function MyProfile() {
     console.log(data);
     try {
       const record = await pb.collection("cases").create(data);
+      // toast.success("Case added successfully");
       // naviaget to cases
       navigate("/cases");
 

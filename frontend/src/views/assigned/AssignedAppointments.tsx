@@ -10,13 +10,17 @@ import { Close, DisabledByDefault } from "@mui/icons-material";
 import { ListResult, RecordModel } from "pocketbase";
 import { endOfWeek, startOfWeek } from "date-fns";
 import { pb } from "../../services/pocketbase";
-import { ScheduleItemsResponse } from "../../pocketbase-types";
+import { CasesResponse, ScheduleItemsResponse } from "../../pocketbase-types";
 import ScheduledItem from "./AssignedAppointmentsTable";
+import AdminItem from "./AdminItem";
 
 export default function AssignedAppointments() {
 
 
   const [result, setResult] = React.useState<ListResult<ScheduleItemsResponse>>()
+  const [cases, setCases] = React.useState<ListResult<CasesResponse>>()
+  const [isSurgeon, setIsSurgeon] = React.useState(false);
+
   const [range, setRange] = React.useState({
     start: startOfWeek(new Date()).toISOString(),
     end: endOfWeek(new Date()).toISOString(),
@@ -26,17 +30,36 @@ export default function AssignedAppointments() {
   useEffect(() => {
 
     // find schedule items for this user
-    pb.collection('schedule_items').getList(1, 50, {
-      filter: `user.id = "${pb.authStore.model?.id}" && type = "surgery"`,
-      expand: `case,procedures`
-    })
-      .then((items) => {
-        setResult(items)
+    if (!pb.authStore.model) {
+      return
+    }
+    if (pb.authStore.model?.role === 'Surgeon') {
+      setIsSurgeon(true)
+      pb.collection('schedule_items').getList(1, 50, {
+        filter: `user.id = "${pb.authStore.model?.id}" && type = "surgery"`,
+        expand: `case,procedures`
       })
-      .catch((error) => {
-        console.error(error)
+        .then((items) => {
+          setResult(items)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+    else {
+      pb.collection('cases').getList(1, 50, {
+        filter: `user.id = "${pb.authStore.model?.id}" `,
+        expand: `schedule_items,procedures`
       })
+        .then((items) => {
+          setCases(items)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
 
+
+    }
   }, [])
 
 
@@ -65,9 +88,12 @@ export default function AssignedAppointments() {
 
         </Stack>
 
-        {
+        {isSurgeon ?
           scheduledItems.map((item) => (
             <ScheduledItem item={item} />
+          )) :
+          cases?.items.map((item) => (
+            <AdminItem item={item} />
           ))
         }
         <OrderList />

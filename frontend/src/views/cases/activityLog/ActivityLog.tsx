@@ -14,16 +14,18 @@ import TapAndPlayRoundedIcon from '@mui/icons-material/TapAndPlayRounded';
 import Avatar from '@mui/joy/Avatar';
 import Typography from '@mui/joy/Typography';
 // Import your custom component
-import SurgeryDetails from './SurgeryDetails';
+import SurgeryDetails from '../caseDetailView/SurgeryDetails';
 import HistoryToggleOffIcon from '@mui/icons-material/HistoryToggleOff';
 import { formatDate } from '../../../lib/utils';
 import { ca } from 'date-fns/locale';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 interface CaseActivityItem {
     type: string;
     note?: string;
     attachments?: any;
-    user?: any;
+    assigned_to?: any;
+    expand?: any;
     meta?: any;
     created: string; // Assuming 'created' is a string property
 }
@@ -55,20 +57,29 @@ const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }
                     <AccordionSummary>
                         <Avatar color="primary">
                             {activityItem.type === 'note' && <FormatListBulletedIcon />}
+                            {activityItem.type === 'action_required' && <TaskAltIcon />}
                             {activityItem.type === 'attachment' && <TapAndPlayRoundedIcon />}
                             {activityItem.type === 'surgery_scheduled_added' && <HistoryToggleOffIcon />}
                         </Avatar>
                         <ListItemContent>
-                            <Typography level="title-md">{activityItem.type === 'surgery_scheduled_added' ? 'Surgery Details' : 'Note'}</Typography>
+                            <Typography level="title-md">{activityItem.type == 'action_required' ? 'Task' : 'Note'}</Typography>
                             <Typography level="body-sm">
-                                {activityItem.type === 'surgery_scheduled_added'
+                                {/* {activityItem.type === 'surgery_scheduled_added'
                                     && 'Activate or deactivate your connections'
                                 }
-
-                                {activityItem.type === 'note'
+                                 */}
+                                {activityItem.type === 'note' || activityItem.type == 'action_required'
                                     && getFirstLine(activityItem?.meta?.note) + '...'
                                 }
+
+
                             </Typography>
+
+                            {activityItem?.assigned_to && activityItem.expand &&
+                                <Typography level='body-xs'>
+                                    Assigned to {activityItem?.expand?.assigned_to.name}
+                                </Typography>
+                            }
                         </ListItemContent>
                         <Typography level="body-sm">
                             {`  ${formatDate(activityItem.created)}`} {/* Display formatted date */}
@@ -84,7 +95,7 @@ const ActivityLogComponent: React.FC<ActivityLogProps> = ({ case_activity_item }
                         )} */}
                         {/* Include other details based on the type */}
                     </AccordionDetails>
-                </Accordion>
+                </Accordion >
             )) : <Typography level="body-sm">No Activity</Typography>}
         </>
 

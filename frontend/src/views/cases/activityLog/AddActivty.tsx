@@ -18,9 +18,20 @@ import UploadIcon from "@mui/icons-material/Upload";
 import { pb } from "../../../services/pocketbase";
 import * as React from "react";
 import { useState } from "react";
+import { UsersResponse } from "../../../pocketbase-types";
 // ... (existing imports)
 
 // AddActivityProps type definition
+
+interface AddActivityData {
+    type?: string;
+    assigned_to?: string;
+    // date?: string;
+    from?: string;
+    until?: string;
+    note?: string;
+}
+
 interface AddActivityProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,14 +51,58 @@ const AddActivity: React.FC<AddActivityProps> = (
     //     setSelectedType(newValue!);
     // };
 
-    const [data, setdata] = useState({
-        note: "",
+    // const handleChange = (e: any) => {
+    //     console.log(e)
+    //     // if date of birth make it a date string for database
+    //     if (e.target.name === "dob") {
+    //         const date = new Date(e.target.value);
+
+    //         setdata({ ...data, [e.target.name]: date });
+    //         // console.log(date, d)
+    //     }
+    //     else
+
+    //         setdata({ ...data, [e.target.name]: e.target.value });
+    // };
+
+    const [data, setdata] = useState<AddActivityData>({
+        type: "note",
+        assigned_to: "",
+        from: "",
+        until: "",
     });
-    const handleChange = (e: any) => {
-        setdata({ ...data, [e.target.name]: e.target.value });
+    const handleChange = (
+        name: string,
+        newValue: string | null,
+    ) => {
+        setdata({ ...data, [name]: newValue! });
     };
+
+    const [users, setUsers] = useState<Array<UsersResponse>>([])
+
+    React.useEffect(() => {
+        // Fetch users
+        const fetchData = async () => {
+            const users = await pb.collection('users').getFullList({
+                sort: '-created',
+
+            });
+
+            if (users)
+                setUsers(users)
+
+
+
+        };
+        // Fetch procedures
+        fetchData()
+
+
+    }, []);
+    const [note, setNote] = useState('');
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
     // const [note, setNote] = useState('');
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,14 +110,16 @@ const AddActivity: React.FC<AddActivityProps> = (
         //  const formData = new FormData(event.currentTarget);
 
         try {
-            if (caseId && type === 'note') {
-                const acitivity_item = await pb.collection('case_activity_item').create({
-                    type: 'note',
+            if (caseId && data.type && data.note !== '') {
+                let req = {
+                    type: data.type,
                     meta: {
                         note: data.note,
                     },
                     case: caseId,
-                });
+                    assigned_to: data.type == "action_required" ? data.assigned_to : undefined
+                }
+                const acitivity_item = await pb.collection('case_activity_item').create(req);
 
             }
             handleClose();
@@ -80,7 +137,7 @@ const AddActivity: React.FC<AddActivityProps> = (
                 <Modal open={open} onClose={handleClose}>
                     <ModalDialog
                         sx={{
-                            width: "50%",
+                            width: { xs: "100%", md: "50%" },
                         }}
                     >
                         <ModalClose onClick={handleClose} />
@@ -91,55 +148,77 @@ const AddActivity: React.FC<AddActivityProps> = (
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <Box sx={{ p: 2 }}>
                                 <Stack spacing={2}>
-                                    {/* <FormControl>
+                                    <FormControl>
                                         <FormLabel>Type</FormLabel>
-                                      
+
 
                                         <Select
 
                                             name="type"
                                             placeholder="Choose Type"
                                             size="sm"
-                                            value={selectedType}
-                                            onChange={handleChange}
+                                            defaultValue={data.type}
+                                            onChange={(_, newValue) => {
+
+                                                handleChange("type", newValue)
+                                            }}
                                         >
 
 
-                                            <Option value="surgery_scheduled_added">
-                                                Surgery scheduled added
+                                            <Option value="note">
+                                                Add Note
                                             </Option>
-                                            <Option value="surgery_scheduled_removed">
-                                                Surgery scheduled removed
+                                            <Option value="action_required">
+                                                Assign Task
                                             </Option>
-                                            <Option value="surgery_scheduled_updated">
-                                                Surgery scheduled updated
-                                            </Option>
-                                            <Option value="note">Note</Option>
+
                                         </Select>
-                                    </FormControl> */}
-                                    {type && type === 'note' && (
+                                    </FormControl>
+                                    {data.type === 'action_required' && (
                                         <FormControl>
-                                            <FormLabel>Note</FormLabel>
+                                            <FormLabel>Assign To</FormLabel>
+                                            <Select
+                                                name="assigned_to"
+                                                placeholder="Choose Assignee"
+                                                size="sm"
+                                                defaultValue={data.assigned_to}
+                                                onChange={(_, newValue) => {
+
+                                                    handleChange("assigned_to", newValue)
+                                                }}
+                                            >
+                                                {users && users.map((user) => (
+                                                    <Option key={user.id} value={user.id}>
+                                                        {user.name}
+                                                    </Option>
+                                                ))}
+
+
+                                            </Select>
+                                        </FormControl>
+                                    )}
+
+                                    {data.type && data.type !== "" && (
+                                        <FormControl>
+                                            <FormLabel>
+
+
+                                                {data.type === 'note' ? 'Note' : 'Task Details'}
+
+
+                                            </FormLabel>
                                             <Textarea
                                                 name="note"
                                                 placeholder="Enter Note"
                                                 minRows='3'
                                                 value={data.note}
+                                                onChange={(e) => handleChange("note", e.target.value)}
 
-                                                onChange={(e) => {
-                                                    handleChange(e);
-                                                }}
+
                                             />
                                         </FormControl>
                                     )}
-                                    <FormControl>
-                                        {/* <FormLabel>Case</FormLabel>
-                                        <Select name="case" placeholder="Choose Case" size="sm">
-                                            <Option value="xbmarqiuhged0wf">Case 1</Option>
-                                            <Option value="sb6eyuw267tfjge">Case 2</Option>
-                                            <Option value="mw9op44a1xn92dv">Case 3</Option>
-                                        </Select> */}
-                                    </FormControl>
+
                                     {/* <FormControl>
                                         <FormLabel>Attachments</FormLabel>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
