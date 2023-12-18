@@ -68,8 +68,15 @@ const SurgeryDetails: React.FC<SurgeryDetailsProps> = ({ surgeryDetails, surgery
                 <Typography>
                     <strong>Procedures:</strong>
                 </Typography>
+                {/* show desccription */}
+
+
+
+
+
+
                 <Stack spacing={1} sx={{ marginLeft: '1.5em' }}>
-                    {surgeryDetail?.expand.procedures.map((procedure: any, index: number) => (
+                    {surgeryDetail?.expand && surgeryDetail?.expand?.procedures.map((procedure: any, index: number) => (
                         <Typography key={index}>
                             {procedure.name} - CPT Code: {procedure.cpt_code}
                         </Typography>
