@@ -98,7 +98,9 @@ export default function CalendarScreen() {
                     return
                 }
 
-                navigate(`/cases/${event.case.id}`)
+
+                console.log(event)
+                navigate(`/cases/details/${event.case}`)
 
             }
         } />

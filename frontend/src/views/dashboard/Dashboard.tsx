@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Box, Typography } from "@mui/joy";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -6,21 +6,76 @@ import CheckIcon from "@mui/icons-material/Check";
 
 import Button from "@mui/joy/Button";
 import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
+import { pb } from "../../services/pocketbase";
+import { CasesRecord, CasesResponse, CollectionResponses } from "../../pocketbase-types";
 
 const icon = {
-  Views: <VisibilityOutlinedIcon />,
-  Clients: <PersonOutlineOutlinedIcon />,
-  Purchases: <CheckIcon />,
+  "New Cases": <VisibilityOutlinedIcon />,
+  "Pending Cases": <PersonOutlineOutlinedIcon />,
+  "Scheduled Cases": <CheckIcon />,
 };
 
 function DashboardStats() {
   const [value, setValue] = useState("week");
+  const [stats, setStats] = useState([
+    { title: "New Cases", count: 0, change: "+0" },
+    { title: "Pending Cases", count: 0, change: "+0" },
+    { title: "Scheduled Cases", count: 0, change: "+0" },
 
-  const stats = [
-    { title: "Views", count: 31, change: "+3" },
-    { title: "Clients", count: 63, change: "+1" },
-    { title: "Purchases", count: 10, change: "+1" },
-  ];
+  ]);
+  useEffect(() => {
+    const fetchCases = async () => {
+      // find schedule items for this user
+      // fetch cases from pocketbase based on week , month, year selected by default week
+      try {
+        // Calculate the start date based on the selected duration
+        const currentDate = new Date();
+        const startDate = new Date(currentDate);
+        if (value === "week") {
+          startDate.setDate(currentDate.getDate() - 7);
+        } else if (value === "month") {
+          startDate.setMonth(currentDate.getMonth() - 1);
+        } else if (value === "year") {
+          startDate.setFullYear(currentDate.getFullYear() - 1);
+        }
+        const cases = await pb.collection("cases").getFullList({
+          filter: 'created > "' + startDate.toISOString() + '" && status != "closed" ',
+
+        });
+
+        const newStats = [
+          { title: "New Cases", count: 0, change: "+0" },
+          { title: "Pending Cases", count: 0, change: "+0" },
+          { title: "Scheduled Cases", count: 0, change: "+0" },
+
+        ];
+        // const patients = cases.map((c) => c.patient);
+        cases.forEach((c) => {
+          if (c.status === "new") {
+            newStats[0].count += 1;
+          } else if (c.status === "scheduled") {
+            newStats[1].count += 1;
+          } else if (c.status === "pending") {
+            newStats[2].count += 1;
+          }
+        });
+
+        setStats(newStats);
+      }
+
+      catch (error) {
+        console.log(error)
+      }
+
+
+    }
+
+    fetchCases();
+  }, [value])
+
+
+
+
   return (
     <>
       <Box
@@ -108,7 +163,7 @@ function DashboardStats() {
               >
                 {stat.count}
               </Typography>
-              <Typography level="body-sm">{stat.change} last day</Typography>
+              {/* <Typography level="body-sm">{stat.change} last day</Typography> */}
             </Box>
           </Card>
         ))}

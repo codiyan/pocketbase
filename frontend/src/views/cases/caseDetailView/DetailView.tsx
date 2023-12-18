@@ -171,26 +171,33 @@ export default function DetailView() {
     const fetchData = async () => {
       try {
         if (id) {
-          const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "case_activity_item(case).assigned_to" });
+          const caseDetailsResponse = await pb.collection('cases').getOne(id, { expand: "schedule_items(case).procedures,case_activity_item(case).assigned_to" });
           // Process caseDetailsResponse as needed]
+
+
+
           if (caseDetailsResponse) {
             // calculate age using util method calculateAge
             let age = calculateAge(caseDetailsResponse.dob);
             let activity_items = [];
+            let schedule_items = [];
             if (caseDetailsResponse.expand) {
               activity_items = (caseDetailsResponse as any).expand['case_activity_item(case)'] || [];
               // sort by created date
 
+              schedule_items = (caseDetailsResponse as any).expand['schedule_items(case)'] || [];
+              console.log(schedule_items)
               activity_items.sort((a: any, b: any) => {
                 return new Date(b.created).getTime() - new Date(a.created).getTime();
               });
+
             }
             setCaseDetailsNew({
               ...caseDetailsResponse,
               age: age,
-              activity_items
-            });
-            console.log(activity_items)
+              activity_items,
+              schedule_items: schedule_items.filter((x: any) => x.type === 'surgery'),
+            })
           }
         }
       } catch (error) {
@@ -199,13 +206,13 @@ export default function DetailView() {
     };
 
     fetchData();
+
+
   }, [id, open]);
 
   const handleOpen = () => setOpen(true);
 
-  const handleSchedule = () => {
-    navigate('/schedule/' + id, { replace: true });
-  }
+
   const navigateToCases = () => {
     navigate('/cases/' + id, { replace: true });
   }
@@ -389,7 +396,7 @@ export default function DetailView() {
             variant="plain"
             transition="0.2s"
             sx={{
-              maxWidth: '800px',
+              maxWidth: '100%',
               mx: 'auto',
               px: {
                 xs: 2,
@@ -409,22 +416,30 @@ export default function DetailView() {
               },
             }}
           >
-            <Accordion>
-              <AccordionSummary>
-                <Avatar color="primary">
-                  <TapAndPlayRoundedIcon />
-                </Avatar>
-                <ListItemContent>
-                  <Typography level="title-md">Sugery Details</Typography>
-                  <Typography level="body-sm">
-                    Activate or deactivate your connections
-                  </Typography>
-                </ListItemContent>
-              </AccordionSummary>
-              <AccordionDetails>
-                <SurgeryDetails surgeryDetails={caseDetails.surgery_scheduled[0]} />
-              </AccordionDetails>
-            </Accordion>
+
+            {caseDetailsNew?.schedule_items?.length > 0 && caseDetailsNew?.schedule_items?.map((item: any) => {
+              return <Accordion >
+                <AccordionSummary>
+                  <Avatar color="primary">
+                    <TapAndPlayRoundedIcon />
+                  </Avatar>
+                  <ListItemContent>
+
+                    <Typography level="title-md">Sugery Details</Typography>
+
+                  </ListItemContent>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <SurgeryDetails surgeryDetails={caseDetails.surgery_scheduled[0]} surgeryDetail={item} />
+                </AccordionDetails>
+              </Accordion>
+            }
+            )}
+
+
+
+
+
           </AccordionGroup>
         </TabPanel>
         <TabPanel value={1}>
@@ -432,7 +447,7 @@ export default function DetailView() {
             variant="plain"
             transition="0.2s"
             sx={{
-              maxWidth: '800px',
+              maxWidth: '100%',
               mx: 'auto',
               px: {
                 xs: 2,
@@ -458,36 +473,28 @@ export default function DetailView() {
           </AccordionGroup>
         </TabPanel>
         <TabPanel value={2}>
-          {/* <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
-              justifyContent: "center",
-              alignContent: "center",
-              maxWidth: "calc(100% - 240px)",
-              margin: "auto",
-              padding: "0 120px",
-            }}
-          > */}
+
           <DocumentView caseId={id as string} />
-          {/* </Box> */}
+
         </TabPanel>
       </Tabs>
       {/* below is example code from mui which can be used for responsive ness and other stuctrure settig */}
     </Box>
-    {open &&
+    {
+      open &&
       <AddActivity open={open} setOpen={setOpen} caseId={id} type={"note"} />
     }
-    {blockTimeModalProps &&
+    {
+      blockTimeModalProps &&
       <AddSchedule
         open={blockTimeModalProps.open}
         start={blockTimeModalProps.start}
         end={blockTimeModalProps.end}
         onClose={() => setBlockTimeModalProps(null)}
-        onBlockTimeCreated={
-          console.log('block time created')
-        }
-      />}
+
+        caseId={id}
+      />
+    }
 
   </Stack >
 }

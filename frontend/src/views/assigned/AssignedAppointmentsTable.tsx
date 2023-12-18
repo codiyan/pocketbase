@@ -28,7 +28,7 @@ const ScheduledItem = ({ item = [] }: Props) => {
   const caseDetails = item?.expand?.case;
 
 
-  return (<Link to={`/cases/${caseDetails?.id}`} style={{
+  return (<Link to={`/cases/details/${caseDetails?.id}`} style={{
     textDecoration: 'none',
     color: 'inherit'
   }}>

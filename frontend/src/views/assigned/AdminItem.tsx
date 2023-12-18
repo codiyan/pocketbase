@@ -13,7 +13,7 @@ const AdminItem = ({ item = [] }: Props) => {
     // x hour y mins using start and end and date-fns
 
 
-    const caseDetails = item
+    const caseDetails = item.expand.case
 
 
     return (<Link to={`/cases/details/${caseDetails?.id}`} style={{
@@ -29,15 +29,15 @@ const AdminItem = ({ item = [] }: Props) => {
                         {caseDetails?.first_name} {caseDetails?.last_name}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', gap: 1 }} >
-                        <Typography level='body-sm'>
-                            {caseDetails.email}
-                        </Typography>
-                        <Typography level='body-sm'>
-                            {caseDetails.phone}
-                        </Typography>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography level="body-sm">SSN: {caseDetails.ssn}</Typography>
                     </Box>
 
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        <Typography level="body-sm">Assigned At: {format(new Date(item.created), 'yyyy-MM-dd HH:mm:ss')}</Typography>
+                        <Typography level="body-sm">Task Note: {item.meta.note}</Typography>
+                        {/* Add more task details as needed */}
+                    </Box>
 
                 </Box>
 

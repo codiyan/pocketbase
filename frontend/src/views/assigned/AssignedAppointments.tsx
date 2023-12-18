@@ -10,7 +10,7 @@ import { Close, DisabledByDefault } from "@mui/icons-material";
 import { ListResult, RecordModel } from "pocketbase";
 import { endOfWeek, startOfWeek } from "date-fns";
 import { pb } from "../../services/pocketbase";
-import { CasesResponse, ScheduleItemsResponse } from "../../pocketbase-types";
+import { CaseActivityItemResponse, CasesResponse, ScheduleItemsResponse } from "../../pocketbase-types";
 import ScheduledItem from "./AssignedAppointmentsTable";
 import AdminItem from "./AdminItem";
 
@@ -18,7 +18,7 @@ export default function AssignedAppointments() {
 
 
   const [result, setResult] = React.useState<ListResult<ScheduleItemsResponse>>()
-  const [cases, setCases] = React.useState<ListResult<CasesResponse>>()
+  const [activityItems, setActivityItems] = React.useState<any>()
   const [isSurgeon, setIsSurgeon] = React.useState(false);
 
   const [range, setRange] = React.useState({
@@ -47,12 +47,15 @@ export default function AssignedAppointments() {
         })
     }
     else {
-      pb.collection('cases').getList(1, 50, {
-        filter: `user.id = "${pb.authStore.model?.id}" `,
-        expand: `schedule_items,procedures`
+      pb.collection('case_activity_item').getFullList({
+        filter: `assigned_to = "${pb.authStore.model?.id}" `,
+        expand: `case`
+
       })
         .then((items) => {
-          setCases(items)
+
+          setActivityItems(items)
+
         })
         .catch((error) => {
           console.error(error)
@@ -92,7 +95,7 @@ export default function AssignedAppointments() {
           scheduledItems.map((item) => (
             <ScheduledItem item={item} />
           )) :
-          cases?.items.map((item) => (
+          activityItems && activityItems.map((item: any) => (
             <AdminItem item={item} />
           ))
         }

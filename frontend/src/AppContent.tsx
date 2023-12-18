@@ -70,7 +70,7 @@ export default function AppContent() {
               path={"/calendar"}
               element={<CalendarScreen />}
             />
-            <Route key={"stats"} path={"/stats"} element={<Dashboard />} />
+            <Route key={"dashboard"} path={"/dashboard"} element={<Dashboard />} />
             <Route
               key={"assigned"}
               path={"/assigned"}

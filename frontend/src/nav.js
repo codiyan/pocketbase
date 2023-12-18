@@ -8,6 +8,12 @@ import {
 } from "@mui/icons-material";
 
 const menuItems = [
+
+  {
+    icon: <DashboardRoundedIcon />,
+    label: "Dashboard",
+    link: "/dashboard",
+  },
   {
     icon: <AssignmentIndRounded />,
     label: "Assigned To Me",
@@ -23,11 +29,7 @@ const menuItems = [
     label: "Calendar",
     link: "/calendar",
   },
-  {
-    icon: <DashboardRoundedIcon />,
-    label: "Stats",
-    link: "/stats",
-  },
+ 
   {
     label: "Add a Case",
     icon: <PersonAddIcon />,

@@ -1,4 +1,4 @@
-import { Box, Button, DialogTitle, FormControl, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select } from '@mui/joy';
+import { Box, Button, DialogTitle, FormControl, FormLabel, Input, Modal, ModalClose, ModalDialog, Option, Select, Textarea } from '@mui/joy';
 import { Stack } from '@mui/material';
 import { format, parse } from 'date-fns';
 import React, { useEffect, useState } from 'react';
@@ -7,15 +7,19 @@ import { pb } from '../../../services/pocketbase';
 import Typography from '@mui/joy/Typography';
 import { CollectionResponses, UsersResponse } from '../../../pocketbase-types';
 interface ScheduleData {
-    type?: string;
+
     assigned_to?: string;
-    // date?: string;
-    from?: string;
-    until?: string;
+
+    procedures?: Array<string>;
+
+    note?: string;
+
+
 }
 
 
-export default function AddSchedule({ onClose, onBlockTimeCreated, open, start: startP, end: endP }: any) {
+
+export default function AddSchedule({ onClose, open, start: startP, end: endP, caseId }: any) {
 
 
 
@@ -25,9 +29,12 @@ export default function AddSchedule({ onClose, onBlockTimeCreated, open, start: 
     const [procedures, setProcedures] = useState<Array<any>>([]);
     const [data, setData] = useState<ScheduleData>({} as ScheduleData)
 
-    const handleChange = (e: any) => {
-        setData({ ...data, [e.target.name]: e.target.value });
-    }
+    const handleChange = (
+        name: string,
+        newValue: string | null | string[],
+    ) => {
+        setData({ ...data, [name]: newValue! });
+    };
 
     useEffect(() => {
         // Fetch users
@@ -76,100 +83,105 @@ export default function AddSchedule({ onClose, onBlockTimeCreated, open, start: 
         // create a new scheduled_event pocketbase of type block
         if (pb.authStore.model) {
             pb.collection('schedule_items').create({
-                type: 'block',
+                type: 'surgery',
                 start: start,
                 end: end,
                 user: pb.authStore.model.id,
+                case: caseId,
+                description: data.note,
+
+
             })
                 .then((res) => {
                     console.log(res)
                     handleClose()
-                    onBlockTimeCreated(res)
+                    // onBlockTimeCreated(res)
                 })
         }
     }
 
     return <Modal onClose={handleClose} open={open}>
 
-        <ModalDialog>
+        <ModalDialog sx={
+            {
+                width: { xs: '100%', sm: '60%' },
+                // maxWidth: 500,
+                p: 2,
+                position: 'relative',
+                overflowY: 'auto',
+                maxHeight: '100%',
+            }
+        }>
             <ModalClose />
 
             <DialogTitle >
-                Action
+                Schedule
             </DialogTitle>
-            <Typography>
-                Block your calendar and let your team know you're busy.
-            </Typography>
+
 
 
             <Stack spacing={2} >
-                <FormControl>
-                    <FormLabel>Type</FormLabel>
 
 
-                    <Select
-
-                        name="type"
-                        placeholder="Choose Type"
-                        size="sm"
-                        value={data.type}
-                        onChange={handleChange}
-                    >
+                <Stack direction="row" spacing={2}>
 
 
-                        <Option value="assign_task">
-                            Assign Task
-                        </Option>
-                        <Option value="schedule_surgery ">
-                            Schedule Surgery
-                        </Option>
-                        <Option value="surgery_scheduled_updated">
-                            Surgery scheduled updated
-                        </Option>
-                        <Option value="note">Note</Option>
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <FormLabel>Assignee</FormLabel>
 
-                    <Select
-                        name="assigned_to"
-                        placeholder="Choose Assignee"
-                        size="sm"
+                    <FormControl sx={{ flex: 1 }}>
+                        <FormLabel>Surgeon</FormLabel>
 
-                    >
-                        {users && users.map((user) => (
-                            <Option key={user.id} value={user.id}>
-                                {user.name}
-                            </Option>
-                        ))}
+                        <Select
+                            name="assigned_to"
+                            placeholder="Choose Surgeon"
+                            size="sm"
+                            defaultValue={data.assigned_to}
+
+                            onChange={
+                                (_, newValue) => {
+                                    handleChange("assigned_to", newValue)
+                                }
+                            }
+
+                        >
+                            {users && users.filter(x =>
+                                x.role === 'Surgeon'
+                            ).map((user) => (
+                                <Option key={user.id} value={user.id}>
+                                    {user.name}
+                                </Option>
+                            ))}
 
 
-                    </Select>
-                </FormControl>
+                        </Select>
+                    </FormControl>
 
 
-                <FormControl  >
-                    <FormLabel>Date</FormLabel>
-                    <Input
 
-                        type="date"
-                        slotProps={{
-                            input: {
-                                min: "2018-06-07T00:00",
-                                max: "2018-06-14T00:00",
-                            },
-                        }}
-                        value={format(start, 'yyyy-MM-dd')}
-                        onChange={(e) => {
-                            const date = new Date(e.target.value)
-                            date.setHours(start.getHours())
-                            date.setMinutes(start.getMinutes())
-                            setStart(date)
-                        }}
-                    />
-                </FormControl>
 
+
+
+                    <FormControl sx={{ flex: 1 }}>
+                        <FormLabel>Date</FormLabel>
+                        <Input
+
+                            type="date"
+                            slotProps={{
+                                input: {
+                                    min: "2018-06-07T00:00",
+                                    max: "2018-06-14T00:00",
+                                },
+                            }}
+                            value={format(start, 'yyyy-MM-dd')}
+                            onChange={(e) => {
+                                const date = new Date(e.target.value)
+                                date.setHours(start.getHours())
+                                date.setMinutes(start.getMinutes())
+                                setStart(date)
+                            }}
+                        />
+                    </FormControl>
+
+                </Stack>
 
                 <Stack direction="row" spacing={2}>
 
@@ -229,6 +241,46 @@ export default function AddSchedule({ onClose, onBlockTimeCreated, open, start: 
 
 
                 </Stack>
+                <FormControl>
+                    <FormLabel>Procedures</FormLabel>
+
+                    <Select
+                        name="procedures"
+                        placeholder="Choose Procedures"
+                        size="sm"
+                        multiple
+                        defaultValue={data.procedures}
+
+                        onChange={
+                            (_, newValue) => {
+                                handleChange("procedures", newValue)
+                            }
+                        }
+
+                    >
+                        {procedures && procedures.map((p) => (
+                            <Option key={p.id} value={p.id}>
+                                {p.name}
+                            </Option>
+                        ))}
+
+
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <FormLabel>Description</FormLabel>
+                    <Textarea
+                        name="note"
+                        placeholder="Surgery Description"
+                        minRows='3'
+                        defaultValue={data.note}
+                        onChange={(e) => handleChange("note", e.target.value)}
+
+
+                    />
+
+                </FormControl>
+
                 <Box
                     sx={{
                         mt: 1,
@@ -238,9 +290,12 @@ export default function AddSchedule({ onClose, onBlockTimeCreated, open, start: 
                     }}
                 >
 
-                    <Button variant="solid" color="primary" onClick={
-                        handleSubmit
-                    }>
+                    <Button
+                        disabled={!data.assigned_to || !data.procedures || !data.note}
+
+                        variant="solid" color="primary" onClick={
+                            handleSubmit
+                        }>
                         Save
                     </Button>
                     <Button

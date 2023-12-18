@@ -6,6 +6,7 @@ import CardContent from '@mui/joy/CardContent';
 import { CardHeader } from '@mui/material';
 import { formatDate } from '../../../lib/utils';
 import { Box } from '@mui/joy';
+import { format } from 'date-fns';
 
 
 
@@ -28,9 +29,10 @@ interface SurgeryDetailsProps {
             cpt_code: string;
         }[];
     };
+    surgeryDetail: any;
 }
 
-const SurgeryDetails: React.FC<SurgeryDetailsProps> = ({ surgeryDetails }) => {
+const SurgeryDetails: React.FC<SurgeryDetailsProps> = ({ surgeryDetails, surgeryDetail }) => {
     return (
 
         // improve styling
@@ -45,33 +47,31 @@ const SurgeryDetails: React.FC<SurgeryDetailsProps> = ({ surgeryDetails }) => {
 
             < Stack spacing={2}>
                 <Typography>
-                    <strong>Start Time:</strong> {formatDate(surgeryDetails.start)}
+                    <strong>Start Time:</strong> {format(new Date(surgeryDetail.start), 'yyyy-MM-dd HH:mm')}
                 </Typography>
                 <Typography>
-                    <strong>End Time:</strong> {formatDate(surgeryDetails.end)}
+                    <strong>End Time:</strong> {format(new Date(surgeryDetail.end), 'yyyy-MM-dd HH:mm')}
                 </Typography>
                 <Typography>
-                    <strong>Type:</strong> {surgeryDetails.type}
+                    <strong>Type:</strong> {surgeryDetail.type}
+                </Typography>
+
+                <Typography>
+                    <strong>Anesthesia Type:</strong> {surgeryDetail.anesthesia_type}
                 </Typography>
                 <Typography>
-                    <strong>Duration:</strong> {surgeryDetails.duration} minutes
+                    <strong>Anesthesia Position:</strong> {surgeryDetail.anesthesia_position}
                 </Typography>
                 <Typography>
-                    <strong>Anesthesia Type:</strong> {surgeryDetails.anesthesia_type}
-                </Typography>
-                <Typography>
-                    <strong>Anesthesia Position:</strong> {surgeryDetails.anesthesia_position}
-                </Typography>
-                <Typography>
-                    <strong>Specialty:</strong> {surgeryDetails.specialty}
+                    <strong>Specialty:</strong> {surgeryDetail.specialty}
                 </Typography>
                 <Typography>
                     <strong>Procedures:</strong>
                 </Typography>
                 <Stack spacing={1} sx={{ marginLeft: '1.5em' }}>
-                    {surgeryDetails.procedures.map((procedure, index) => (
+                    {surgeryDetail?.expand.procedures.map((procedure: any, index: number) => (
                         <Typography key={index}>
-                            {procedure.name} ({procedure.site}, {procedure.laterality}) - CPT Code: {procedure.cpt_code}
+                            {procedure.name} - CPT Code: {procedure.cpt_code}
                         </Typography>
                     ))}
                 </Stack>
