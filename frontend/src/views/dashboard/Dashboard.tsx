@@ -3,7 +3,6 @@ import { Card, Box, Typography } from "@mui/joy";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import CheckIcon from "@mui/icons-material/Check";
-
 import Button from "@mui/joy/Button";
 import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
 
@@ -30,9 +29,24 @@ function DashboardStats() {
           alignItems: "center",
           mt: 2,
           mx: 2,
+          flexDirection: { xs: "column", sm: "row" },
         }}
       >
-        <Typography level="body-md" sx={{ flexGrow: 1 }}>
+        <Typography
+          level="body-md"
+          sx={{
+            flexGrow: 1,
+            mb: { xs: 2, sm: 0 },
+            fontWeight: "bold",
+            letterSpacing: "0.5px",
+            color: "text.primary",
+            textAlign: { xs: "center", sm: "left" },
+            p: "8px",
+            backgroundColor: "background.paper",
+            borderRadius: "8px",
+            boxShadow: 1,
+          }}
+        >
           Control and analyze your data in the easiest way
         </Typography>
         <ToggleButtonGroup
@@ -42,13 +56,14 @@ function DashboardStats() {
               setValue(newValue);
             }
           }}
-          sx={{ ml: 2 }}
+          sx={{ ml: { xs: 0, sm: 2 } }}
         >
           <Button value="week">Week</Button>
           <Button value="month">Month</Button>
           <Button value="year">Year</Button>
         </ToggleButtonGroup>
       </Box>
+
       <Box
         sx={{
           display: "grid",
@@ -59,7 +74,7 @@ function DashboardStats() {
           padding: 1,
         }}
       >
-        {stats.map((stat) => (
+        {stats.map((stat, index) => (
           <Card
             key={stat.title}
             sx={{
@@ -74,6 +89,13 @@ function DashboardStats() {
                 sm: 290,
                 xs: "100%",
               },
+
+              backgroundColor:
+                stat.title === "Views"
+                  ? "#87CEEB"
+                  : stat.title === "Clients"
+                  ? "#B0E0E6"
+                  : "none",
             }}
           >
             <Box
@@ -108,7 +130,15 @@ function DashboardStats() {
               >
                 {stat.count}
               </Typography>
-              <Typography level="body-sm">{stat.change} last day</Typography>
+              <Typography
+                level="body-sm"
+                sx={{
+                  fontWeight: index < 2 ? "500" : "400",
+                  color: index < 2 ? "text.secondary" : "text.primary",
+                }}
+              >
+                {stat.change} last day
+              </Typography>
             </Box>
           </Card>
         ))}
